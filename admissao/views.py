@@ -1,4 +1,5 @@
 import os
+from subprocess import Popen
 
 from django.conf import settings
 from django.contrib import messages
@@ -235,7 +236,10 @@ def generate_contract(template, collaborator):
 
     # Convert the Word document to PDF
     new_contract_pdf_filename = os.path.join(contract_directory, f'{collaborator.name}_{template.name}.pdf')
-    convert_docx_to_pdf(new_contract_filename, new_contract_pdf_filename)
+    p = Popen(['libreoffice', '--headless', '--convert-to', 'pdf', new_contract_filename, '--outdir', contract_directory])
+    print("Waiting for conversion...")
+    p.wait()
+    print("Conversion finished.")
 
     # Delete the Word document
     os.remove(new_contract_filename)
