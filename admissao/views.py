@@ -1,6 +1,5 @@
 import os
 
-import pythoncom
 from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
