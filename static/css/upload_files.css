@@ -1,0 +1,247 @@
+*, *:after, *:before {
+    box-sizing: border-box;
+}
+
+:root {
+    --c-action-primary: #ffb135;
+    --c-action-primary-accent: #e9e5ff;
+    --c-action-secondary: #e5e5e5;
+    --c-text-primary: #0d0f21; 
+    --c-text-secondary: #6a6b76;
+    --c-background-primary: #f1f1f167;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    color: var(--c-text-primary);
+    background-color: var(--c-background-primary);	
+    line-height: 1.5;
+}
+
+input, button, select, textarea {
+    font: inherit;
+}
+
+.modal22 {
+    width: 90%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10vh;
+    margin-bottom: 10vh;
+    background-color: #FFF;
+    border-radius: .5rem;
+    box-shadow: 0 5px 15px rgba(#000, .2); 
+}
+
+.modal22-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 1.5rem 1.5rem 1rem;
+}
+
+.logo-circle {
+    width: 3.5rem;
+    height: 3.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: var(--c-action-primary-accent);
+    svg {
+        max-width: 1.5rem;
+    }
+}
+
+.btn-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: .25rem;
+    border: none;
+    background-color: transparent;
+    &:hover, &:focus {
+        background-color: var(--c-action-primary-accent);
+    }
+}
+
+.modal22-body {
+    padding: 1rem 1.5rem;
+}
+
+.modal22-title {
+    font-weight: 700;
+}
+
+.modal22-description {
+    color: var(--c-text-secondary);
+}
+
+.upload-area {
+    margin-top: 1.25rem;
+    border: none;
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23ccc' stroke-width='3' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+    background-color: transparent;
+    padding: 3rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    &:hover, &:focus {
+            background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23ff7f00' stroke-width='3' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+    }
+} 
+
+.upload-area-icon {
+    display: block;
+    svg {
+        max-height: 100%;
+        max-width: 100%;
+    }
+}
+
+.upload-area-icon svg {
+    max-height: 4.5rem;
+    max-width: 4.5rem;
+}
+
+.upload-area-title {
+    margin-top: 1rem;
+    display: block;
+    font-weight: 700;
+        color: var(--c-text-primary);
+}
+
+.upload-area-description {
+        display: block;
+        color: var(--c-text-secondary);
+    strong {
+        color: var(--c-action-primary);
+        font-weight: 700;
+    }
+}
+
+.modal22-footer {
+    padding: 1rem 1.5rem 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    [class*="btn-"] {
+        margin-left: .75rem;
+    }
+}
+
+.btn-secondary, .btn-primary {
+    padding: .5rem 1rem;
+    font-weight: 500;
+    border: 2px solid var(--c-action-secondary);
+    border-radius: .25rem;
+    background-color: transparent;
+}
+
+.btn-primary {
+    color: #FFF;
+    background-color: var(--c-action-primary);
+    border-color: var(--c-action-primary);
+}
+
+#fileInput {
+    display: none;
+}
+
+
+.input-box {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1.1rem;
+}
+
+.input-box input {
+    margin: 0.6rem 0;
+    padding: 0.8rem 1.2rem;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 1px 1px 6px #0000001c;
+}
+
+.input-box input:hover {
+    background-color: #eeeeee75;
+}
+
+.input-box input:focus-visible {
+    outline: 1px solid rgb(255, 168, 68);
+}
+
+.input-box label,
+.gender-title h6 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #000000c0;
+}
+
+.input-box input::placeholder {
+    color: #000000be;
+}
+
+.input-box input {
+    width: 39rem; /* Altera a largura do input para 70% da largura do container pai */
+
+}
+
+.login-button a {
+    text-decoration: none;
+    font-weight: 500;
+    color: #fff;
+  } 
+.btn-secondary{
+    text-decoration: none;
+}
+
+.btn-primary {
+    cursor: pointer;
+}
+
+.btn-secondary:active, .btn-primary:active {
+    color: inherit;
+}
+
+.btn-secondary:visited, .btn-primary:visited {
+    color: inherit;
+}
+
+
+.upload-area-title, .upload-area-description {
+    text-align: center;
+}
+
+.clique-aqui{
+    cursor: pointer;
+}
+
+
+/* Seu CSS atual */
+
+/* Adicionar esses estilos */
+.btn-primary:hover {
+    background-color: #ff9900; /* A cor que você quer quando o mouse passa por cima */
+    border-color: #ff9900;
+}
+
+.btn-primary:active {
+    background-color: #ff9900; /* A cor que você quer quando o botão é clicado */
+    border-color: #ff9900;
+}
+
+.clique-aqui:hover {
+    color: #ff9900; /* A cor que você quer quando o mouse passa por cima */
+}
+
+.clique-aqui:active {
+    color: #ff9900; /* A cor que você quer quando o link é clicado */
+}
+
+.btn-secondary:hover {
+    color: #e9e5ff;
+}

@@ -1,0 +1,115 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style2.css' %}">
+    <title>Nota Fiscal</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-image">
+            <a href="{% url 'index' %}">
+                <img src="{% static 'images/undraw_receipt_re_fre3.svg' %}" alt="">
+            </a>
+        </div>
+
+
+        <div class="form">
+            <form action="{% url 'cnpj' %}" method="POST" class="form" autocomplete="off"
+                enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-header">
+                    <div class="title">
+                        <h1>Cadastrar CNPJ</h1>
+                    </div>
+
+
+                    <div class="input-group">
+                        <div class="input-box">
+                            <div class="select">
+
+
+                                <div class="form-contratos">
+
+                                    <div class="comp-nota">
+                                        <div class="comp-nota-1">CNPJ:</div>
+                                        <div class="comp-nota-1">{{form.cnpj}}</div>
+                                    </div>
+                                    <div class="tipo-de-faturamento">
+                                        <div class="tipo-de-faturamento-1">Razão Social:</div>
+                                        <div class="tipo-de-faturamento-1">{{form.razao}}</div>
+                                    </div>
+                                    <div class="cnpj-nota">
+                                        <div class="cnpj-nota-1">Av/Rua:</div>
+                                        <div class="cnpj-nota-1">{{form.avenida_rua}}</div>
+                                    </div>
+                                    <div class="cotratos">
+                                        <div class="cotratos-1">Endereço:</div>
+                                        <div class="cotratos-1">{{form.endereco}}</div>
+                                    </div>
+                                    <div class="qtd-horas">
+                                        <div class="qtd-horas-1">Numero:</div>
+                                        <div class="qtd-horas-1">{{form.numero}}</div>
+                                    </div>
+                                    <div class="cotratos">
+                                        <div class="cotratos-1">Complemento:</div>
+                                        <div class="cotratos-1">{{form.complemento}}</div>
+                                    </div>
+                                    <div class="qtd-horas">
+                                        <div class="qtd-horas-1">Bairro:</div>
+                                        <div class="qtd-horas-1">{{form.bairro}}</div>
+                                    </div>
+                                    <div class="cotratos">
+                                        <div class="cotratos-1">Municipio:</div>
+                                        <div class="cotratos-1">{{form.municipio}}</div>
+                                    </div>
+                                    <div class="qtd-horas">
+                                        <div class="qtd-horas-1">UF:</div>
+                                        <div class="qtd-horas-1">{{form.uf}}</div>
+                                    </div>
+                                    <div class="cotratos">
+                                        <div class="cotratos-1">CEP:</div>
+                                        <div class="cotratos-1">{{form.cep}}</div>
+                                    </div>
+                                    <div class="qtd-horas">
+                                        <div class="qtd-horas-1">Nome do Cliente:</div>
+                                        <div class="qtd-horas-1">{{form.nome_cliente}}</div>
+                                    </div>
+                                    <div class="cotratos">
+                                        <div class="cotratos-1">Tipo de serviço:</div>
+                                        <div class="cotratos-1">{{form.tipo_de_servico}}</div>
+                                    </div>
+                                    <div class="qtd-horas">
+                                        <div class="qtd-horas-1">ISS:</div>
+                                        <div class="qtd-horas-1">{{form.iss}}</div>
+                                    </div>
+                                    <div class="cotratos">
+                                        <div class="cotratos-1">Unidade:</div>
+                                        <div class="cotratos-1">{{form.unidade}}</div>
+                                    </div>
+                                    
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="login-button">
+                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

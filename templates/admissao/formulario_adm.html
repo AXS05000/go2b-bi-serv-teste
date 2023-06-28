@@ -1,0 +1,437 @@
+{% load filters %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="keywords" content="Bootstrap, Landing page, Template, Registration, Landing">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="author" content="Grayrids">
+    <title>GO2B BI</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'assets_2/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets_2/css/line-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets_2/css/owl.carousel.css' %}">
+    <link rel="stylesheet" href="{% static 'assets_2/css/owl.theme.css' %}">
+    <link rel="stylesheet" href="{% static 'assets_2/css/nivo-lightbox.css' %}">
+    <link rel="stylesheet" href="{% static 'assets_2/css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'assets_2/css/animate.css' %}">
+    <link rel="stylesheet" href="{% static 'assets_2/css/color-switcher.css' %}">
+    <link rel="stylesheet" href="{% static 'assets_2/css/menu_sideslide.css' %}">
+    <link rel="stylesheet" href="{% static 'assets_2/css/main.css' %}"> 
+    <link rel="stylesheet" href="{% static 'css/formulario.css' %}">    
+    <link rel="stylesheet" href="{% static 'assets_2/css/responsive.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'assets/img/go2b-bi.png' %}">
+  </head>
+  
+  <body>
+    <!-- Header Section Start -->
+    <header id="slider-area">  
+      <nav class="navbar navbar-expand-md fixed-top scrolling-navbar bg-white">
+        <div class="container">  
+          <a class="navbar-brand" href="{% url 'index' %}"><img class="brand-logo" src="{% static 'assets/img/go2b-bi.png' %}" alt="" style="max-height: 25px;">  GO2B-BI</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="lni-menu"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto w-100 justify-content-end">
+              <li class="nav-item">
+                <a class="nav-link page-scroll" href="{% url 'index' %}">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link page-scroll" href="#services">Serviços</a>
+              </li>  
+              <li class="nav-item">
+                <a class="nav-link page-scroll" href="#features">Características</a>
+              </li>                            
+              <li class="nav-item">
+                <a class="nav-link page-scroll" href="#portfolios">Trabalhos</a>
+              </li>            
+              <li class="nav-item">
+                <a class="nav-link page-scroll" href="#team">Time</a>
+              </li>    
+              <li class="nav-item">
+                <a class="nav-link page-scroll" href="{% url 'search_collaborator' %}">Candidatos</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link page-scroll" href="#admissao">Admissão</a>
+              </li>
+              {% if user.is_super_user %}
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link page-scroll" href="{% url 'upload_template' %}">Importar Template</a>
+              </li>
+              {% endif %} 
+              {% if user.is_anonymous %}
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link page-scroll" href="{% url 'logout' %}">Sair</a>
+              </li>
+              {% endif %}  
+
+            </ul>              
+          </div>
+        </div>
+      </nav> 
+
+
+    </header>
+    <!-- Header Section End --> 
+
+    <div class="form-container form-center container d-flex justify-content-center align-items-center">
+    <!-- Features Section Start -->
+    <section id="admissao" class="section">
+      <div class="container">
+        <div class="section-header">          
+          <h2 class="section-title">PREENCHA SUAS INFORMAÇÕES:</h2>
+          <span>ADMISSÃO</span>
+        </div>
+        <div class="row">
+
+
+          <form action="#" method="POST" class="form-horizontal container" autocomplete="off"
+          enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-header">
+              {% if form.errors %}
+
+                      {% for field in form %}
+                          {% for error in field.errors %}
+                              <div class="alert alert-danger alert-dismissible text-white" role="alert">
+                                  <span class="text-sm">{{ error }}</span>
+                                  <button type="button" class="btn-close text-lg py-3 opacity-10 cursor-pointer" data-bs-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                          {% endfor %}
+                      {% endfor %}
+
+              {% endif %}
+
+              {% if messages %}
+                  {% for message in messages %}
+                  {% if message.tags == 'success' %}
+                      <div class="position-fixed bottom-1 end-1 z-index-2">
+                          <div class="toast fade show p-2 bg-white" role="alert" aria-live="assertive" id="successToast" aria-atomic="true">
+                              <div class="toast-header border-0">
+                                  <i class="material-icons text-success me-2">check</i>
+                                  <span class="me-auto font-weight-bold">Notificação do sistema</span>
+                                  <small class="text-body">1 seg atrás</small>
+                                  <i class="fas fa-times text-md ms-3 cursor-pointer" data-bs-dismiss="toast" aria-label="Close"></i>
+                              </div>
+                                  <hr class="horizontal dark m-0">
+                              <div class="toast-body">
+                                      {{ message }}<br>
+                              </div>
+                          </div>
+                      </div>
+                  {% elif message.tags == 'error' %}
+                      <div class="alert alert-danger alert-dismissible text-white" role="alert">
+                          <span class="text-sm">{{ message }}</span>
+                          <button type="button" class="btn-close text-lg py-3 opacity-10 cursor-pointer" data-bs-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                          </button>
+                      </div>
+                  {% elif message.tags == 'warning' %}
+                      
+                      <div class="alert alert-info2 alert-dismissible text-white" role="alert">
+                          <span class="text-sm">{{ message }}</span>
+                          <button type="button" class="btn-close text-lg py-3 opacity-10 cursor-pointer" data-bs-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                          </button>
+                      </div>
+                  {% else %}
+                    <li>{{ message }}</li>
+                  {% endif %}
+                  {% endfor %}
+              {% endif %}
+              <div class="input-group">
+                  <div class="input-box">
+                      <div class="select">
+                          <div id="camposAdicionais" class="select produto-quantidade">
+                              <div class="form-contratos" id="produto1">
+                                  <div class="comp-nota-1">Nome:</div>
+                                  <div class="comp-nota-1">{{ form.name }}</div>
+                              </div>
+                              <div class="form-contratos" id="produto8">
+                                <div class="comp-nota-1">E-mail:</div>
+                                <div class="comp-nota-1">{{ form.email }}</div>
+                              </div>
+                              <div class="tipo-de-faturamento" id="quantidade_vendida7">
+                                <div class="tipo-de-faturamento-1">Celular:</div>
+                                <div class="tipo-de-faturamento-1">{{ form.celular|addattrs:"id=celular" }}</div>
+                              </div>
+                              <div class="tipo-de-faturamento" id="quantidade_vendida1">
+                                  <div class="tipo-de-faturamento-1">CPF:</div>
+                                  <div class="tipo-de-faturamento-1">{{ form.cpf|addattrs:"id=cpf" }}</div>
+                              </div>
+                              <div class="tipo-de-faturamento" id="quantidade_vendida2">
+                                  <div class="tipo-de-faturamento-1">RG:</div>
+                                  <div class="tipo-de-faturamento-1">{{ form.rg }}</div>
+                              </div>
+                              <div class="form-contratos" id="produto3">
+                                  <div class="comp-nota-1">Orgão Emissor RG:</div>
+                                  <div class="comp-nota-1">{{ form.orgao_emissor_rg }}</div>
+                              </div>
+                              <div class="tipo-de-faturamento" id="quantidade_vendida3">
+                                  <div class="tipo-de-faturamento-1">UF RG:</div>
+                                  <div class="tipo-de-faturamento-1">{{ form.uf_rg }}</div>
+                              </div>
+                              <div class="form-contratos" id="produto4">
+                                  <div class="comp-nota-1">Data Emissão RG:</div>
+                                  <div class="comp-nota-1">{{ form.data_emissao_rg }}</div>
+                              </div>
+                              <div class="tipo-de-faturamento" id="quantidade_vendida4">
+                                  <div class="tipo-de-faturamento-1">N° CTPS:</div>
+                                  <div class="tipo-de-faturamento-1">{{ form.n_ctps }}</div>
+                              </div>
+                              <div class="form-contratos" id="Serie CTPS">
+                                  <div class="comp-nota-1">Serie CTPS:</div>
+                                  <div class="comp-nota-1">{{ form.serie }}</div>
+                              </div>
+                              <div class="tipo-de-faturamento" id="quantidade_vendida5">
+                                  <div class="tipo-de-faturamento-1">UF CTPS:</div>
+                                  <div class="tipo-de-faturamento-1">{{ form.uf_ctps }}</div>
+                              </div>
+                              <div class="form-contratos" id="produto6">
+                                  <div class="comp-nota-1">Data Emissão CTPS:</div>
+                                  <div class="comp-nota-1">{{ form.data_emissao_ctps }}</div>
+                              </div>
+                              <div class="form-contratos" id="produto7">
+                                  <div class="comp-nota-1">CEP:</div>
+                                  <div class="comp-nota-1">{{ form.cep|addattrs:"id=cep" }}</div>
+                              </div>
+                              <div class="tipo-de-faturamento" id="quantidade_vendida6">
+                                <div class="tipo-de-faturamento-1">Endereço:</div>
+                                <div class="tipo-de-faturamento-1">{{ form.endereco }}</div>
+                              </div>
+
+                          </div>
+
+
+                      </div>
+                  </div>
+              </div>
+              <div class="login-button">
+                  <button type="submit" class="btn btn-primary">Cadastrar</button>
+              </div>
+
+          </div>
+      </form>
+
+        </div>
+      </div>
+    </section>
+    </div>
+    <!-- Features Section End -->   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+      <!-- Copyright Start  -->
+      <div id="copyright">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="site-info float-left">
+                <p>Crafted by <a href="http://uideck.com" rel="nofollow">UIdeck</a></p>
+              </div>              
+              <div class="float-right">  
+                <ul class="nav nav-inline">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="#">About Prime</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">TOS</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Return Policy</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">FAQ</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Copyright End -->
+
+    </footer>
+    <!-- Footer Section End --> 
+
+    <!-- Go To Top Link -->
+    <a href="#" class="back-to-top">
+      <i class="lni-arrow-up"></i>
+    </a>
+
+    <div id="loader">
+      <div class="spinner">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+      </div>
+    </div>    
+
+    <!-- jQuery first, then Tether, then Bootstrap JS. -->
+    <script src="{% static 'assets_2/js/jquery-min.js' %}"></script>
+    <script src="{% static 'assets_2/js/popper.min.js' %}"></script>
+    <script src="{% static 'assets_2/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets_2/js/classie.js' %}"></script>
+    <script src="{% static 'assets_2/js/color-switcher.js' %}"></script>
+    <script src="{% static 'assets_2/js/jquery.mixitup.js' %}"></script>
+    <script src="{% static 'assets_2/js/nivo-lightbox.js' %}"></script>
+    <script src="{% static 'assets_2/js/owl.carousel.js' %}"></script>    
+    <script src="{% static 'assets_2/js/jquery.stellar.min.js' %}"></script>    
+    <script src="{% static 'assets_2/js/jquery.nav.js' %}"></script>    
+    <script src="{% static 'assets_2/js/scrolling-nav.js' %}"></script>    
+    <script src="{% static 'assets_2/js/jquery.easing.min.js' %}"></script>     
+    <script src="{% static 'assets_2/js/wow.js' %}"></script> 
+    <script src="{% static 'assets_2/js/jquery.vide.js' %}"></script>
+    <script src="{% static 'assets_2/js/jquery.counterup.min.js' %}"></script>    
+    <script src="{% static 'assets_2/js/jquery.magnific-popup.min.js' %}"></script>    
+    <script src="{% static 'assets_2/js/waypoints.min.js' %}"></script>    
+    <script src="{% static 'assets_2/js/form-validator.min.js' %}"></script>
+    <script src="{% static 'assets_2/js/contact-form-script.js' %}"></script>   
+    <script src="{% static 'assets_2/js/main.js' %}"></script>
+    <script>
+      window.STATIC_URL = "{% static '' %}";
+    </script>
+    <script>
+      function formatar(mascara, documento) {
+        var i = 0;
+        var valor = documento.value.replace(/\D/g, '');
+        var formatado = '';
+      
+        for (var m = 0; m < mascara.length; m++) {
+          if (mascara[m] === '#') {
+            if (valor[i] !== undefined) {
+              formatado += valor[i++];
+            }
+          } else {
+            formatado += mascara[m];
+          }
+        }
+      
+        documento.value = formatado;
+      }
+    
+      document.getElementById('cpf').addEventListener('input', function() {
+        var cpf = this.value.replace(/\D/g, '');
+        var mascara = '###.###.###-##';
+    
+        if (cpf.length <= 3) {
+          mascara = '###';
+        } else if (cpf.length <= 6) {
+          mascara = '###.###';
+        } else if (cpf.length <= 9) {
+          mascara = '###.###.###';
+        }
+    
+        formatar(mascara, this);
+      });
+    
+      document.getElementById('celular').addEventListener('input', function() {
+        var celular = this.value.replace(/\D/g, '');
+        var mascara = '## #####-####';
+    
+        if (celular.length <= 6) {
+          mascara = '## ####-####';
+        }
+    
+        formatar(mascara, this);
+      });
+    
+      document.getElementById('cep').addEventListener('input', function() {
+        var cep = this.value.replace(/\D/g, '');
+        var mascara = '#####-###';
+    
+        if (cep.length <= 5) {
+          mascara = '#####';
+        } else if (cep.length > 5) {
+          mascara = '#####-###';
+        }
+    
+        formatar(mascara, this);
+      });
+    
+      document.getElementById('cpf').addEventListener('keydown', function(event) {
+        if (event.keyCode === 8) { // Tecla "Backspace"
+          event.preventDefault();
+          var value = this.value.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+          this.value = value.substring(0, value.length - 1); // Remove o último caractere
+    
+          var cpf = this.value.replace(/\D/g, '');
+          var mascara = '###.###.###-##';
+    
+          if (cpf.length <= 3) {
+            mascara = '###';
+          } else if (cpf.length <= 6) {
+            mascara = '###.###';
+          } else if (cpf.length <= 9) {
+            mascara = '###.###.###';
+          }
+    
+          formatar(mascara, this);
+        }
+      });
+    
+      document.getElementById('celular').addEventListener('keydown', function(event) {
+        if (event.keyCode === 8) { // Tecla "Backspace"
+          event.preventDefault();
+          var value = this.value.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+          this.value = value.substring(0, value.length - 1); // Remove o último caractere
+    
+          var celular = this.value.replace(/\D/g, '');
+          var mascara = '## #####-####';
+    
+          if (celular.length <= 6) {
+            mascara = '## ####-####';
+          }
+    
+          formatar(mascara, this);
+        }
+      });
+    
+      document.getElementById('cep').addEventListener('keydown', function(event) {
+        if (event.keyCode === 8) { // Tecla "Backspace"
+          event.preventDefault();
+          var value = this.value.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+          this.value = value.substring(0, value.length - 1); // Remove o último caractere
+    
+          var cep = this.value.replace(/\D/g, '');
+          var mascara = '#####-###';
+    
+          if (cep.length <= 5) {
+            mascara = '#####';
+          } else if (cep.length > 5) {
+            mascara = '#####-###';
+          }
+    
+          formatar(mascara, this);
+        }
+      });
+    </script>
+    
+    
+  </body>
+</html>

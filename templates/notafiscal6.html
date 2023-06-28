@@ -1,0 +1,183 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style2.css' %}">
+    <link href="{% static 'assets/css/nucleo-icons.css' %}" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <title>Nota Fiscal</title>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-image">
+            <a href="{% url 'index' %}">
+                <img src="{% static 'images/undraw_receipt_re_fre3.svg' %}" alt="">
+            </a>
+        </div>
+
+
+        <div class="form">
+            <form action="{% url 'notafiscal6' %}" method="POST" class="form" autocomplete="off"
+                enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-header">
+                    <div class="title">
+                        <h1>Cadastrar Notas</h1>
+                    </div>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == 'success' %}
+                            <div class="position-fixed bottom-1 end-1 z-index-2">
+                                <div class="toast fade show p-2 bg-white" role="alert" aria-live="assertive" id="successToast" aria-atomic="true">
+                                    <div class="toast-header border-0">
+                                        <i class="material-icons text-success me-2">check</i>
+                                        <span class="me-auto font-weight-bold">Notificação do sistema</span>
+                                        <small class="text-body">1 seg atrás</small>
+                                        <i class="fas fa-times text-md ms-3 cursor-pointer" data-bs-dismiss="toast" aria-label="Close"></i>
+                                    </div>
+                                        <hr class="horizontal dark m-0">
+                                    <div class="toast-body">
+                                            {{ message }}<br>
+                                    </div>
+                                </div>
+                            </div>
+                        {% elif message.tags == 'error' %}
+                            <div class="alert alert-danger alert-dismissible text-white" role="alert">
+                              {% if form.errors %}
+
+                              {% for field in form %}
+      
+                          
+                                  {% for error in field.errors %}
+                                  <span class="text-sm">{{ error }}</span>
+                                  <button type="button" class="btn-close text-lg py-3 opacity-10 cursor-pointer" data-bs-dismiss="alert" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                  </button>
+                                  {% endfor %}
+                              {% endfor %}
+
+                          {% endif %}
+                            </div>
+                        {% else %}
+                          <li>{{ message }}</li>
+                        {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    <div class="input-group">
+                        <div class="input-box">
+                            <div class="select">
+
+
+                                <div class="form-contratos">
+
+                                    <div class="comp-nota">
+                                        <div class="comp-nota-1">Competência da Nota:</div>
+                                        <div class="comp-nota-1">{{form.competencia_nota}}</div>
+                                    </div>
+                                    <div class="tipo-de-faturamento">
+                                        <div class="tipo-de-faturamento-1">Tipo de Faturamento:</div>
+                                        <div class="tipo-de-faturamento-1">{{form.tipo_de_faturamento}}</div>
+                                    </div>
+                                    <div class="cnpj-nota">
+                                        <div class="cnpj-nota-1">CNPJ:</div>
+                                        <div class="cnpj-nota-1">{{form.cnpj_da_nota}}</div>
+                                    </div>
+                                    <div class="cotratos">
+                                        <div class="cotratos-1">Cargo:</div>
+                                        <div class="cotratos-1">{{form.baseinfocontratos}}</div>
+                                    </div>
+                                    <div class="qtd-horas">
+                                        <div class="qtd-horas-1">Quantidade de Horas:</div>
+                                        <div class="qtd-horas-1">{{form.quantidade_hora}}</div>
+                                    </div>
+                                    <div class="cotratos">
+                                        <div class="cotratos-1">Cargo 2:</div>
+                                        <div class="cotratos-1">{{form.baseinfocontratos2}}</div>
+                                    </div>
+                                    <div class="qtd-horas">
+                                        <div class="qtd-horas-1">Quantidade de Horas 2:</div>
+                                        <div class="qtd-horas-1">{{form.quantidade_hora2}}</div>
+                                    </div>
+                                    <div class="cotratos">
+                                        <div class="cotratos-1">Cargo 3:</div>
+                                        <div class="cotratos-1">{{form.baseinfocontratos3}}</div>
+                                    </div>
+                                    <div class="qtd-horas">
+                                        <div class="qtd-horas-1">Quantidade de Horas 3:</div>
+                                        <div class="qtd-horas-1">{{form.quantidade_hora3}}</div>
+                                    </div>
+                                    <div class="cotratos">
+                                        <div class="cotratos-1">Cargo 4:</div>
+                                        <div class="cotratos-1">{{form.baseinfocontratos4}}</div>
+                                    </div>
+                                    <div class="qtd-horas">
+                                        <div class="qtd-horas-1">Quantidade de Horas 4:</div>
+                                        <div class="qtd-horas-1">{{form.quantidade_hora4}}</div>
+                                    </div>
+                                    <div class="cotratos">
+                                        <div class="cotratos-1">Cargo 5:</div>
+                                        <div class="cotratos-1">{{form.baseinfocontratos5}}</div>
+                                    </div>
+                                    <div class="qtd-horas">
+                                        <div class="qtd-horas-1">Quantidade de Horas 5:</div>
+                                        <div class="qtd-horas-1">{{form.quantidade_hora5}}</div>
+                                    </div>
+                                    <div class="cotratos">
+                                        <div class="cotratos-1">Cargo 6:</div>
+                                        <div class="cotratos-1">{{form.baseinfocontratos6}}</div>
+                                    </div>
+                                    <div class="qtd-horas">
+                                        <div class="qtd-horas-1">Quantidade de Horas 6:</div>
+                                        <div class="qtd-horas-1">{{form.quantidade_hora6}}</div>
+                                    </div>
+                                    <div class="qtd-horas">
+                                        <div class="qtd-horas-1">Porcentagem de Desconto ANS:</div>
+                                        <div class="qtd-horas-1">{{form.porcentagem_ans}}</div>
+                                    </div>
+                                    <div class="qtd-horas">
+                                        <div class="qtd-horas-1">Competência ANS:</div>
+                                        <div class="qtd-horas-1">{{form.competencia_nota_ans}}</div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="login-button">
+                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="{% static 'assets/js/core/bootstrap.min.js' %}"></script>
+    <script>
+        // Adiciona um evento de clique para cada botão de fechar a mensagem
+        var closeButtons = document.querySelectorAll('.toast .fa-times');
+        closeButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                this.closest('.toast').remove();
+            });
+        });
+    </script>
+    <script>
+        setTimeout(function(){
+            document.querySelector('.toast').remove();
+        }, 5000); // Remove a notificação após 5 segundos (5000 ms)
+    </script>
+</body>
+
+</html>

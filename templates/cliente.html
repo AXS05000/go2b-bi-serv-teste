@@ -1,0 +1,300 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title> {{ title_cliente }}</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <!-- Icon -->
+    <link rel="stylesheet" href="{% static 'fonts/line-icons.css' %}">
+    <!-- Owl carousel -->
+    <link rel="stylesheet" href="{% static 'assets/css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/owl.theme.css' %}">
+
+    <!-- Animate -->
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <!-- Responsive Style -->
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" integrity="sha512-P9vJUXK+LyvAzj8otTOKzdfF1F3UYVl13+F8Fof8/2QNb8Twd6Vb+VD52I7+87tex9UXxnzPgWA3rH96RExA7A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" integrity="sha512-sVSECYdnRMezwuq5uAjKQJEcu2wybeAPjU4VJQ9pCRcCY4pIpIw4YMHIOQ0CypfwHRvdSPbH++dA3O4Hihm/LQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" integrity="sha512-tk4nGrLxft4l30r9ETuejLU0a3d7LwMzj0eXjzc16JQj+5U1IeVoCuGLObRDc3+eQMUcEQY1RIDPGvuA7SNQ2w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css"
+    integrity="sha512-P9vJUXK+LyvAzj8otTOKzdfF1F3UYVl13+F8Fof8/2QNb8Twd6Vb+VD52I7+87tex9UXxnzPgWA3rH96RExA7A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css"
+        integrity="sha512-sVSECYdnRMezwuq5uAjKQJEcu2wybeAPjU4VJQ9pCRcCY4pIpIw4YMHIOQ0CypfwHRvdSPbH++dA3O4Hihm/LQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css"
+        integrity="sha512-tk4nGrLxft4l30r9ETuejLU0a3d7LwMzj0eXjzc16JQj+5U1IeVoCuGLObRDc3+eQMUcEQY1RIDPGvuA7SNQ2w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@900&display=swap" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+    <!-- Header Area wrapper Starts -->
+    <header id="header-wrap">
+        <!-- Navbar Start -->
+        <nav class="navbar navbar-expand-md bg-inverse fixed-top scrolling-navbar">
+            <div class="container">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <a href="{% url 'index' %}" class="navbar-brand"><img src="{% static 'images/ametista.png' %}" alt=""></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="lni-menu"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav mr-auto w-100 justify-content-end clearfix">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{% url 'index' %}">
+                                Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'gestao' %}">
+                                Gestão
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                Outras Funções
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#pricing">
+                                Preço
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#contact">
+                                Contato
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Navbar End -->
+
+        <!-- Hero Area Start -->
+        <div id="hero-area1" class="hero-area-bg">
+            <div class="container">
+                <div class="row">
+                    <div class="search-container">
+                        <div class="container">
+                            <form action="{% url 'search' %}" method="GET" class="search-form">
+                                <input type="search" class="search-input" name="q" required>
+                                <button type="submit" class="search-button"><i class="fas fa-search"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          
+        </div>
+        <!-- Hero Area End -->
+
+    </header>
+    <!-- Header Area wrapper End --> 
+
+    <!-- Services Section Start -->
+    <section id="services" class="section-padding">
+        <div class="container">
+            <main class="main-content-container">
+                <div class="main-content main-content-list container">
+
+                {% for nota_tudo in nota_gestao %}
+                    <div class="recipe recipe-list-item">
+                        <div class="recipe-cover">
+                            <a href="{% url 'nota-individual' nota_tudo.id %}">
+                            <img src="{% static 'images/undraw_receipt_re_fre3.svg' %}" alt="Temporário">
+                            </a>
+                        </div>
+                        <div class="recipe-title-container">
+                            <h6 class="recipe-title">
+                                <a href="{% url 'nota-individual' nota_tudo.id %}">
+                                    Ordem de Serviço {{nota_tudo.id}} - {{nota_tudo.baseinfocontratos.contrato}} 
+                                </a>
+                            </h6>
+                        </div>
+                        <div class="recipe-author">
+                            <span class="recipe-author-item">
+                                <i class="fas fa-user"></i>
+                                {{nota_tudo.tipo_de_faturamento}}
+                            </span>
+                            <span class="recipe-author-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                {{ nota_tudo.data_de_modificacao|date:"d/m/Y" }}
+                            </span>
+                            <span class="recipe-author-item recipe-author-item-category">
+                                <a href="#">
+                                    <div class="recipe-author-item-category">
+                                        <a href="{% url 'cliente' nota_tudo.cnpj_da_nota.id %}">
+                                            <i class="fas fa-layer-group"></i>
+                                            <span>{{ nota_tudo.cnpj_da_nota.nome_cliente }}</span>
+                                        </a>
+                                    </div>
+                                </a>
+                            </span>
+                        </div>
+        
+                        <div class="recipe-content">
+                            <p>{{ nota_tudo.baseinfocontratos.cargo }} - {{ nota_tudo.quantidade_hora }}</p>
+                            {% if nota_tudo.baseinfocontratos2.cargo is not null %}
+                            <p>{{ nota_tudo.baseinfocontratos2.cargo }} - {{ nota_tudo.quantidade_hora2 }}</p>
+                            {% endif %}
+                            {% if nota_tudo.baseinfocontratos3.cargo is not null %}
+                            <p>{{ nota_tudo.baseinfocontratos3.cargo }} - {{ nota_tudo.quantidade_hora3 }}</p>
+                            {% endif %}
+                            {% if nota_tudo.baseinfocontratos3.cargo is not null %}
+                            <p>...</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="recipe-meta-container">
+                            <div class="recipe-meta recipe-preparation">
+                                <h5 class="recipe-meta-title"><i class="fas fa-business-time"></i>  Total de Horas</h5>
+                                <div class="recipe-meta-text">
+                                    {{ nota_tudo.quantidade_hora  }}
+                                </div>
+                            </div>
+                            <div class="recipe-meta recipe-servings">
+                                <h5 class="recipe-meta-title"><i class="fas fa-money-bill"></i>  Valor Total</h5>
+                                <div class="recipe-meta-text">
+                                    {{ nota_tudo.baseinfocontratos.valor_hora }}
+                                </div>
+                            </div>
+                        </div>
+        
+                        {% if pag_de_detalhe is not True %}
+                            <footer class="recipe-footer">
+                                <a class="recipe-read-more button button-dark button-full-width" href="{% url 'nota-individual' nota_tudo.id %}">
+                                    <i class="fas fa-eye"></i>
+                                    <span>ver mais...</span>
+                                </a>
+                            </footer>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                    
+                </div>
+            </main>
+        </div>
+    </section>
+    <!-- Services Section End -->
+
+    <!-- Footer Section Start -->
+    <footer id="footer" class="footer-area section-padding">
+        <div class="container">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12">
+                        <div class="widget">
+                            <h3 class="footer-logo"><img src="{% static 'images/ametista.png' %}" alt=""></h3>
+                            <div class="textwidget">
+                                <p>Entre também em contato através de uma das nossas redes sociais abaixo e não esqueça de curtir nossos posts no instagram e linkedin!</p>
+                            </div>
+                            <div class="social-icon">
+                                <a class="facebook" href="#"><i class="lni-facebook-filled"></i></a>
+                                <a class="twitter" href="#"><i class="lni-twitter-filled"></i></a>
+                                <a class="instagram" href="#"><i class="lni-instagram-filled"></i></a>
+                                <a class="linkedin" href="#"><i class="lni-linkedin-filled"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                        <h3 class="footer-titel">Products</h3>
+                        <ul class="footer-link">
+                            <li><a href="#">Tracking</a></li>
+                            <li><a href="#">Application</a></li>
+                            <li><a href="#">Resource Planning</a></li>
+                            <li><a href="#">Enterprise</a></li>
+                            <li><a href="#">Employee Management</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                        <h3 class="footer-titel">Resources</h3>
+                        <ul class="footer-link">
+                            <li><a href="#">Payment Options</a></li>
+                            <li><a href="#">Fee Schedule</a></li>
+                            <li><a href="#">Getting Started</a></li>
+                            <li><a href="#">Identity Verification</a></li>
+                            <li><a href="#">Card Verification</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                        <h3 class="footer-titel">Contact</h3>
+                        <ul class="address">
+                            <li>
+                                <a href="#"><i class="lni-map-marker"></i> 105 Madison Avenue - <br> Third Floor New
+                                    York, NY 10016</a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="lni-phone-handset"></i> P: +84 846 250 592</a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="lni-envelope"></i> E: contact@uideck.com</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="copyright">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="copyright-content">
+                            <p>Copyright © 2020 <a rel="nofollow" href="https://uideck.com">UIdeck</a> All Right
+                                Reserved</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+
+    <!-- Go to Top Link -->
+    <a href="#" class="back-to-top">
+        <i class="lni-arrow-up"></i>
+    </a>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader" id="loader-1"></div>
+    </div>
+    <!-- End Preloader -->
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="{% static 'js/jquery-min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/wow.js' %}"></script>
+    <script src="{% static 'js/jquery.nav.js' %}"></script>
+    <script src="{% static 'js/scrolling-nav.js' %}"></script>
+    <script src="{% static 'js/jquery.easing.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/form-validator.min.js' %}"></script>
+    <script src="{% static 'js/contact-form-script.min.js' %}"></script>
+
+</body>
+
+</html>

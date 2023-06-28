@@ -1,0 +1,57 @@
+{% load notas_filters %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notas Portal Osasco</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#searchInput").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#notasTable tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <form method="post">
+        {% csrf_token %}
+        <label for="data_inicial">Data Inicial:</label>
+        <input type="date" id="data_inicial" name="data_inicial">
+        <label for="data_final">Data Final:</label>
+        <input type="date" id="data_final" name="data_final">
+        <input type="submit" value="Buscar">
+    </form>
+    <input id="searchInput" type="text" placeholder="Buscar pelo nome do tomador...">
+    
+    {% if response %}
+        <table id="notasTable">
+            <tr>
+                <th>Numero da Nota</th>
+                <th>Data de Emissão</th>
+                <th>Cliente</th>
+                <th>CNPJ</th>
+                <th>Valor da Nota</th>
+                <th>Link</th>
+                <!-- Adicione todos os campos relevantes aqui -->
+            </tr>
+            {% for nota in response.NotasGeradas.NotaFiscalConsultaDTO %}
+            <tr>
+                <td>{{ nota.Numero }}</td>
+                <td>{{ nota.DataEmissao|date:"d/m/Y H:i" }}</td>
+                <td>{{ nota.NomeTomador }}</td>
+                <td>{{ nota.DocTomador|format_cnpj }}</td>
+                <td>{{ nota.Valor }}</td>
+                <td>{{ nota.LinkNFE }}</td>
+                <!-- E todos os campos correspondentes aqui -->
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    
+</body>
+</html>

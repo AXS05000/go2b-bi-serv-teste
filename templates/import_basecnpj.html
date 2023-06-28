@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Importar para BaseCNPJ</title>
+</head>
+<body>
+    <h1>Importar para BaseCNPJ</h1>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="excel_file">Arquivo Excel</label>
+        <input type="file" class="form-control-file" id="excel_file" name="excel_file">
+      </div>
+      <button type="submit" class="btn btn-primary">Importar</button>
+    </form>
+</body>
+</html>
