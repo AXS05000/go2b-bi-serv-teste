@@ -237,9 +237,9 @@ def generate_contract(template, collaborator):
     # Convert the Word document to PDF
     new_contract_pdf_filename = os.path.join(contract_directory, f'{collaborator.name}_{template.name}.pdf')
     p = Popen(['libreoffice', '--headless', '--convert-to', 'pdf', new_contract_filename, '--outdir', contract_directory])
-    print("Waiting for conversion...")
+    #print("Waiting for conversion...")
     p.wait()
-    print("Conversion finished.")
+    #print("Conversion finished.")
 
     # Delete the Word document
     os.remove(new_contract_filename)
