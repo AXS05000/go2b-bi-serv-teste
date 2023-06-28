@@ -13,6 +13,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 from docx import Document
 from docx2pdf import convert
+from docx2pdf import convert as convert_docx_to_pdf
 from rest_framework import generics
 from zeep import Client
 
@@ -233,15 +234,9 @@ def generate_contract(template, collaborator):
     new_contract_filename = os.path.join(contract_directory, f'{collaborator.name}_{template.name}.docx')
     doc.save(new_contract_filename)
 
-    # Initialize the Python COM interop
-    pythoncom.CoInitialize()
-
     # Convert the Word document to PDF
     new_contract_pdf_filename = os.path.join(contract_directory, f'{collaborator.name}_{template.name}.pdf')
-    convert(new_contract_filename, new_contract_pdf_filename)
-
-    # Uninitialize the Python COM interop
-    pythoncom.CoUninitialize()
+    convert_docx_to_pdf(new_contract_filename, new_contract_pdf_filename)
 
     # Delete the Word document
     os.remove(new_contract_filename)
