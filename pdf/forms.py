@@ -16,3 +16,8 @@ class SelecionarFuncionarioForm(forms.Form):
 
 class DeleteCompForm(forms.Form):
     comp = forms.IntegerField()
+
+
+class AutenticacaoForm(forms.Form):
+    autenticacao = forms.CharField(max_length=200)
+    competencia = forms.CharField(max_length=200)

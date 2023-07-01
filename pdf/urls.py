@@ -11,4 +11,7 @@ urlpatterns = [
     path('upload-bene/', views.upload_excel_bene, name='upload_excel_beneficio'),
     path('upload-folha/', views.upload_excel_folha, name='upload_excel_folha'),
     path('delete-comp/', views.delete_comp_view, name='delete_comp'),
+    path('download/', views.download_file, name='download_file'),
+    path('aut/<str:competencia>/<str:autenticacao>/', views.download_file_url, name='download_file_url'),
+
 ]

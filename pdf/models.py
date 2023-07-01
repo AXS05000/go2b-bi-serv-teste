@@ -163,3 +163,15 @@ class Folha_de_Ponto(models.Model):
 
     def __str__(self):
         return f'{self.comp} - {self.codigo_fc}'
+    
+
+class Arquivo(models.Model):
+    pdf = models.FileField(upload_to='pdfs/')
+    competencia = models.CharField(max_length=200)
+
+    def __str__(self):
+        return f'{self.pdf}'
+
+
+
+

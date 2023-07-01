@@ -54,3 +54,7 @@ def login_view(request):
 @login_required(login_url='/login/')
 def index(request):
     return render(request, 'index.html')
+
+
+def handler404(request, exception):
+    return render(request, 'page/404.html', status=404)
