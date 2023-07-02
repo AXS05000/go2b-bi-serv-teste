@@ -221,3 +221,6 @@ class NotaFiscal2(models.Model):
     valor = models.FloatField(null=True, blank=True)
     valor_iss = models.FloatField(null=True, blank=True)
     valor_nfe = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.data_emissao} - {self.valor}- {self.nome_tomador}'
