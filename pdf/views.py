@@ -10,8 +10,9 @@ from django.urls import path
 from . import views
 from .forms import AutenticacaoForm, DeleteCompForm, SelecionarFuncionarioForm
 from .models import Arquivo, Beneficios_Mala, Funcionario
+from .tasks import importar_excel_beneficios
 from .utils import gerar_pdf, importar_excel
-from .utils2 import gerar_pdf2, importar_excel_beneficios, importar_excel_folha
+from .utils2 import gerar_pdf2, importar_excel_folha
 
 
 def find_and_extract_page(file, authentication):
@@ -84,7 +85,7 @@ def delete_comp_view(request):
 def upload_excel_bene(request):
     if request.method == 'POST':
         arquivo = request.FILES['arquivo']
-        importar_excel_beneficios(arquivo)
+        importar_excel_beneficios.delay(arquivo)
         return redirect('upload_excel_beneficio')
 
     return render(request, 'pdf/upload_bene.html')
