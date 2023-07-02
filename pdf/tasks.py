@@ -1,5 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
+import os
+
 import openpyxl
 from celery import shared_task
 from django.core.paginator import Paginator
@@ -34,3 +36,6 @@ def importar_excel_beneficios(filepath):
                     'data_de_pagamento': row[10],
                 }
             )
+    
+    # Remove the file after processing
+    os.remove(filepath)
