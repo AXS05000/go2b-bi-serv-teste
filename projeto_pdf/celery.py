@@ -22,6 +22,6 @@ def debug_task(self):
 @after_setup_logger.connect
 def setup_loggers(logger, *args, **kwargs):
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    file_handler = logging.FileHandler('celery.log')
+    file_handler = logging.FileHandler('/home/ubuntu/sistemas/celery.log')
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
