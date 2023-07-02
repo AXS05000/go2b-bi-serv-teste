@@ -1,4 +1,7 @@
 import io
+import os
+import shutil
+import tempfile
 
 import fitz  # PyMuPDF
 from django.contrib.auth.decorators import login_required
@@ -88,7 +91,12 @@ def upload_excel_bene(request):
         arquivo = request.FILES['arquivo']
         fs = FileSystemStorage()
         filename = fs.save(arquivo.name, arquivo)
-        importar_excel_beneficios.delay(filename)
+        with fs.open(filename) as f:
+            temp_dir = tempfile.mkdtemp()
+            temp_filename = os.path.join(temp_dir, filename)
+            with open(temp_filename, 'wb') as temp_f:
+                shutil.copyfileobj(f, temp_f)
+        importar_excel_beneficios.delay(temp_filename)
         return redirect('upload_excel_beneficio')
 
     return render(request, 'pdf/upload_bene.html')
