@@ -160,6 +160,41 @@ def atualizar_notas(request):
     return render(request, 'notas/update.html')
 
 
+def atualizar_notas_automaticamente():
+    response = consultar_api()
+
+    if not response['Erro']:
+        notas_geradas = response['NotasGeradas']['NotaFiscalConsultaDTO']
+        NotaFiscal2.objects.all().delete()  # Remove as notas existentes
+
+        for nota in notas_geradas:
+                NotaFiscal2.objects.create(
+                    aliquota = nota['Aliquota'],
+                    cod_atividade = nota['CodAtividade'].strip(),
+                    cod_obra = nota['CodObra'],
+                    codigo_autenticidade = nota['CodigoAutenticidade'],
+                    data_cancelamento = nota['DataCancelamento'],
+                    data_emissao = nota['DataEmissao'],
+                    data_recibo = nota['DataRecibo'],
+                    doc_tomador = nota['DocTomador'],
+                    endereco_prestacao_servico = nota['EnderecoPrestacaoServico'],
+                    link_nfe = nota['LinkNFE'],
+                    motivo_cancelamento = nota['MotivoCancelamento'],
+                    nome_tomador = nota['NomeTomador'],
+                    nosso_numero = nota['NossoNumero'],
+                    numero = nota['Numero'],
+                    numero_recibo = nota['NumeroRecibo'],
+                    substituicao_tributaria = nota['SubstituicaoTributaria'],
+                    valor = nota['Valor'],
+                    valor_iss = nota['ValorIss'],
+                    valor_nfe = nota['ValorNFE']
+                )
+
+        print("Notas atualizadas com sucesso.")
+    else:
+        print(f"Erro: {response['MensagemErro']}")
+
+
 
 
 
