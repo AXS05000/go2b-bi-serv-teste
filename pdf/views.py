@@ -4,6 +4,7 @@ import shutil
 import tempfile
 
 import fitz  # PyMuPDF
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 from django.http import (FileResponse, Http404, HttpResponse,
@@ -89,14 +90,13 @@ def delete_comp_view(request):
 def upload_excel_bene(request):
     if request.method == 'POST':
         arquivo = request.FILES['arquivo']
-        fs = FileSystemStorage()
-        filename = fs.save(arquivo.name, arquivo)
-        with fs.open(filename) as f:
-            temp_dir = tempfile.mkdtemp()
-            temp_filename = os.path.join(temp_dir, filename)
-            with open(temp_filename, 'wb') as temp_f:
-                shutil.copyfileobj(f, temp_f)
-        importar_excel_beneficios.delay(temp_filename)
+        filepath = os.path.join(settings.MEDIA_ROOT, arquivo.name)
+
+        with open(filepath, 'wb+') as destination:
+            for chunk in arquivo.chunks():
+                destination.write(chunk)
+
+        importar_excel_beneficios.delay(filepath)
         return redirect('upload_excel_beneficio')
 
     return render(request, 'pdf/upload_bene.html')
