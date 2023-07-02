@@ -2,18 +2,15 @@ from __future__ import absolute_import, unicode_literals
 
 import openpyxl
 from celery import shared_task
-from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator
 
 from .models import Beneficios_Mala
 
 
 @shared_task
-def importar_excel_beneficios(filename):
-    fs = FileSystemStorage()
-    with fs.open(filename) as f:
-        workbook = openpyxl.load_workbook(f, read_only=True)
-        sheet = workbook.active
+def importar_excel_beneficios(filepath):
+    workbook = openpyxl.load_workbook(filepath, read_only=True)
+    sheet = workbook.active
 
     rows = list(sheet.iter_rows(min_row=2, values_only=True))  # Converter o gerador em uma lista
 
