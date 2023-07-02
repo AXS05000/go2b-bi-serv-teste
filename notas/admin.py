@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import BaseCNPJ, BaseInfoContratos, Competencias, Notas
+from .models import (BaseCNPJ, BaseInfoContratos, Competencias, NotaFiscal2,
+                     Notas)
 
 
 @admin.register(BaseInfoContratos)
@@ -12,6 +13,7 @@ class BaseInfoContratosAdmin(admin.ModelAdmin):
 class CompetenciasAdmin(admin.ModelAdmin):
     list_display = ('competencia',)
 
+admin.site.register(NotaFiscal2)
 
 @admin.register(Notas)
 class NotasAdmin(admin.ModelAdmin):
