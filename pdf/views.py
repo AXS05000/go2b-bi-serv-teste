@@ -2,6 +2,7 @@ import io
 
 import fitz  # PyMuPDF
 from django.contrib.auth.decorators import login_required
+from django.core.files.storage import FileSystemStorage
 from django.http import (FileResponse, Http404, HttpResponse,
                          HttpResponseRedirect)
 from django.shortcuts import redirect, render
@@ -85,7 +86,9 @@ def delete_comp_view(request):
 def upload_excel_bene(request):
     if request.method == 'POST':
         arquivo = request.FILES['arquivo']
-        importar_excel_beneficios.delay(arquivo)
+        fs = FileSystemStorage()
+        filename = fs.save(arquivo.name, arquivo)
+        importar_excel_beneficios.delay(filename)
         return redirect('upload_excel_beneficio')
 
     return render(request, 'pdf/upload_bene.html')
