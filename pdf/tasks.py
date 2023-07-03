@@ -9,6 +9,22 @@ from django.core.paginator import Paginator
 from .models import Beneficios_Mala
 
 
+def non_null_defaults(row):
+    fields = [
+        'comp',
+        'codigo',
+        'codigo_fc',
+        'aut',
+        'data_inicio',
+        'data_fim',
+        'dias_calculados',
+        'tipo_de_beneficio',
+        'valor_pago',
+        'data_de_pagamento',
+    ]
+
+    return {field: value for field, value in zip(fields, row[1:]) if value is not None}
+
 @shared_task
 def importar_excel_beneficios(filepath):
     workbook = openpyxl.load_workbook(filepath, read_only=True)
@@ -21,21 +37,8 @@ def importar_excel_beneficios(filepath):
     for page_number in paginator.page_range:
         page = paginator.page(page_number)
         for row in page.object_list:
-            Beneficios_Mala.objects.update_or_create(
-                id=row[0],
-                defaults={
-                    'comp': row[1],
-                    'codigo': row[2],
-                    'codigo_fc': row[3],
-                    'aut': row[4],
-                    'data_inicio': row[5],
-                    'data_fim': row[6],
-                    'dias_calculados': row[7],
-                    'tipo_de_beneficio': row[8],
-                    'valor_pago': row[9],
-                    'data_de_pagamento': row[10],
-                }
-            )
+            defaults = non_null_defaults(row)
+            Beneficios_Mala.objects.update_or_create(id=row[0], defaults=defaults)
     
     # Remove the file after processing
     os.remove(filepath)
