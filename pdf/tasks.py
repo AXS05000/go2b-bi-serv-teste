@@ -36,7 +36,7 @@ def importar_excel_beneficios(filepath):
 
     rows = list(sheet.iter_rows(min_row=2, values_only=True))  # Converter o gerador em uma lista
 
-    paginator = Paginator(rows, 1000)  # 1000 linhas por página
+    paginator = Paginator(rows, 250)  # 1000 linhas por página
 
     for page_number in paginator.page_range:
         page = paginator.page(page_number)
@@ -56,7 +56,7 @@ def importar_excel_funcionario(filepath):
     sheet = workbook.active
 
     rows = list(sheet.iter_rows(min_row=2, values_only=True))
-    paginator = Paginator(rows, 100) 
+    paginator = Paginator(rows, 50) 
 
     fields = [
             'comp',
@@ -177,7 +177,7 @@ def importar_excel_folha_de_ponto(filepath):
     sheet = workbook.active
 
     rows = list(sheet.iter_rows(min_row=2, values_only=True))
-    paginator = Paginator(rows, 100) 
+    paginator = Paginator(rows, 50) 
 
     fields = [
         'comp',
