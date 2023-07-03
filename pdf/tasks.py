@@ -56,7 +56,7 @@ def importar_excel_funcionario(filepath):
     sheet = workbook.active
 
     rows = list(sheet.iter_rows(min_row=2, values_only=True))
-    paginator = Paginator(rows, 1000) 
+    paginator = Paginator(rows, 100) 
 
     fields = [
             'comp',
@@ -177,7 +177,7 @@ def importar_excel_folha_de_ponto(filepath):
     sheet = workbook.active
 
     rows = list(sheet.iter_rows(min_row=2, values_only=True))
-    paginator = Paginator(rows, 1000) 
+    paginator = Paginator(rows, 100) 
 
     fields = [
         'comp',
