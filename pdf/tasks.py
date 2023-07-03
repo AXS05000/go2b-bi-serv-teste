@@ -36,7 +36,7 @@ def importar_excel_beneficios(filepath):
 
     rows = list(sheet.iter_rows(min_row=2, values_only=True))  # Converter o gerador em uma lista
 
-    paginator = Paginator(rows, 250)  # 1000 linhas por página
+    paginator = Paginator(rows, 500)  # 1000 linhas por página
 
     for page_number in paginator.page_range:
         page = paginator.page(page_number)
