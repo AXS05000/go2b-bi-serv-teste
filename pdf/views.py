@@ -15,9 +15,10 @@ from django.urls import path
 from . import views
 from .forms import AutenticacaoForm, DeleteCompForm, SelecionarFuncionarioForm
 from .models import Arquivo, Beneficios_Mala, Funcionario
-from .tasks import importar_excel_beneficios
-from .utils import gerar_pdf, importar_excel
-from .utils2 import gerar_pdf2, importar_excel_folha
+from .tasks import (importar_excel_beneficios, importar_excel_folha_de_ponto,
+                    importar_excel_funcionario)
+from .utils import gerar_pdf
+from .utils2 import gerar_pdf2
 
 
 def find_and_extract_page(file, authentication):
@@ -106,7 +107,13 @@ def upload_excel_bene(request):
 def upload_excel_folha(request):
     if request.method == 'POST':
         arquivo = request.FILES['arquivo']
-        importar_excel_folha(arquivo)
+        filepath = os.path.join(settings.MEDIA_ROOT, arquivo.name)
+
+        with open(filepath, 'wb+') as destination:
+            for chunk in arquivo.chunks():
+                destination.write(chunk)
+
+        importar_excel_folha_de_ponto.delay(filepath)
         return redirect('upload_excel_folha')
 
     return render(request, 'pdf/upload_folha.html')
@@ -116,7 +123,13 @@ def upload_excel_folha(request):
 def upload_excel(request):
     if request.method == 'POST':
         arquivo = request.FILES['arquivo']
-        importar_excel(arquivo)
+        filepath = os.path.join(settings.MEDIA_ROOT, arquivo.name)
+
+        with open(filepath, 'wb+') as destination:
+            for chunk in arquivo.chunks():
+                destination.write(chunk)
+
+        importar_excel_funcionario.delay(filepath)
         return redirect('upload_excel')
 
     return render(request, 'pdf/upload.html')
