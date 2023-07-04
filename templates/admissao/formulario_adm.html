@@ -43,27 +43,44 @@
                 <a class="nav-link page-scroll" href="{% url 'index' %}">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link page-scroll" href="#services">Serviços</a>
-              </li>  
-              <li class="nav-item">
-                <a class="nav-link page-scroll" href="#features">Características</a>
-              </li>                            
-              <li class="nav-item">
-                <a class="nav-link page-scroll" href="#portfolios">Trabalhos</a>
-              </li>            
-              <li class="nav-item">
-                <a class="nav-link page-scroll" href="#team">Time</a>
-              </li>    
-              <li class="nav-item">
-                <a class="nav-link page-scroll" href="{% url 'search_collaborator' %}">Candidatos</a>
+                <a class="nav-link page-scroll" href="{% url 'index' %}">Serviços</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link page-scroll" href="#admissao">Admissão</a>
+                <a class="nav-link page-scroll" href="{% url 'index' %}">Trabalhos</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link page-scroll" href="{% url 'index' %}">Equipe</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link page-scroll nav-link-ded dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Notas</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="nav-link" href="{% url 'gerar-csv' %}">Notas Fiscais</a>
+                    <a class="nav-link" href="{% url 'notasficais' %}">Notas Portal</a>
+                    {% comment %} <div class="dropdown-divider"></div> {% endcomment %}
+                    {% comment %} <a class="dropdown-item" href="#">Tes</a> {% endcomment %}
+                </div>
+              </li>                             
+              <li class="nav-item dropdown">
+                <a class="nav-link page-scroll nav-link-ded dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admissão</a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <a class="nav-link" href="{% url 'admissao' %}">Form Admissão</a>
+                      <a class="nav-link" href="{% url 'search_collaborator' %}">Painel RH</a>
+                      {% comment %} <div class="dropdown-divider"></div> {% endcomment %}
+                      {% comment %} <a class="dropdown-item" href="#">Tes</a> {% endcomment %}
+                  </div>
               </li>
               {% if user.is_super_user %}
               {% else %}
-              <li class="nav-item">
-                <a class="nav-link page-scroll" href="{% url 'upload_template' %}">Importar Template</a>
+              <li class="nav-item dropdown">
+                <a class="nav-link nav-link-ded dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Importações</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="nav-link" href="{% url 'upload_template' %}">Importar Word</a>
+                    <a class="nav-link" href="{% url 'upload_excel' %}">Importar Mala</a>
+                    <a class="nav-link" href="{% url 'upload_excel_folha' %}">Importar Folha</a>
+                    <a class="nav-link" href="{% url 'upload_excel_beneficio' %}">Importar Beneficio</a>
+                    {% comment %} <div class="dropdown-divider"></div> {% endcomment %}
+                    {% comment %} <a class="dropdown-item" href="#">Tes</a> {% endcomment %}
+                </div>
               </li>
               {% endif %} 
               {% if user.is_anonymous %}
