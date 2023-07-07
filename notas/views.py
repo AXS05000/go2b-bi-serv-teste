@@ -499,14 +499,6 @@ def update_basecnpj(request):
         return render(request, 'atualizar_cnpj.html', {'success': True})
     return render(request, 'atualizar_cnpj.html')
 
-def import_basecnpj(request):
-    if request.method == 'POST':
-        excel_file = request.FILES['excel_file']
-        import_basecnpj_from_excel(excel_file)
-        return render(request, 'notas/import_basecnpj.html', {'success': True})
-    return render(request, 'notas/import_basecnpj.html')
-
-
 
 @login_required(login_url='/login/')
 def import_basecnpj(request):
