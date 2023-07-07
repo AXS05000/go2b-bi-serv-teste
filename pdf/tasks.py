@@ -5,6 +5,7 @@ import os
 import openpyxl
 from celery import shared_task
 from django.core.paginator import Paginator
+from django.shortcuts import redirect, render
 
 from .models import Beneficios_Mala, Folha_de_Ponto, Funcionario
 
@@ -325,3 +326,13 @@ def importar_excel_folha_de_ponto(filepath):
 
     # Remove the file after processing
     os.remove(filepath)
+
+
+
+
+
+
+
+
+
+

@@ -15,7 +15,8 @@ from zeep import Client
 
 from .forms import BaseCNPJModelForm, NotasModelForm
 from .models import BaseCNPJ, NotaFiscal2, Notas, NumeradorLote
-from .utils import import_basecnpj_from_excel, update_basecnpj_from_excel
+from .tasks import import_basecnpj_from_excel
+from .utils import update_basecnpj_from_excel
 
 #########################################################################################
 
@@ -121,78 +122,7 @@ class GerarcsvTemplateView(ListView):
     
 
 
-# PUXAR NOTAS PARA O MODELS.
-def atualizar_notas(request):
-    if request.method == 'POST':
-        response = consultar_api()
 
-        if not response['Erro']:
-            notas_geradas = response['NotasGeradas']['NotaFiscalConsultaDTO']
-            NotaFiscal2.objects.all().delete()  # Remove as notas existentes
-
-            for nota in notas_geradas:
-                NotaFiscal2.objects.create(
-                    aliquota = nota['Aliquota'],
-                    cod_atividade = nota['CodAtividade'].strip(),
-                    cod_obra = nota['CodObra'],
-                    codigo_autenticidade = nota['CodigoAutenticidade'],
-                    data_cancelamento = nota['DataCancelamento'],
-                    data_emissao = nota['DataEmissao'],
-                    data_recibo = nota['DataRecibo'],
-                    doc_tomador = nota['DocTomador'],
-                    endereco_prestacao_servico = nota['EnderecoPrestacaoServico'],
-                    link_nfe = nota['LinkNFE'],
-                    motivo_cancelamento = nota['MotivoCancelamento'],
-                    nome_tomador = nota['NomeTomador'],
-                    nosso_numero = nota['NossoNumero'],
-                    numero = nota['Numero'],
-                    numero_recibo = nota['NumeroRecibo'],
-                    substituicao_tributaria = nota['SubstituicaoTributaria'],
-                    valor = nota['Valor'],
-                    valor_iss = nota['ValorIss'],
-                    valor_nfe = nota['ValorNFE']
-                )
-
-            return render(request, 'notas/update.html', {'notas': NotaFiscal2.objects.all()})
-        else:
-            print(f"Erro: {response['MensagemErro']}")
-
-    return render(request, 'notas/update.html')
-
-
-def atualizar_notas_automaticamente():
-    response = consultar_api()
-
-    if not response['Erro']:
-        notas_geradas = response['NotasGeradas']['NotaFiscalConsultaDTO']
-        NotaFiscal2.objects.all().delete()  # Remove as notas existentes
-
-        for nota in notas_geradas:
-                NotaFiscal2.objects.create(
-                    aliquota = nota['Aliquota'],
-                    cod_atividade = nota['CodAtividade'].strip(),
-                    cod_obra = nota['CodObra'],
-                    codigo_autenticidade = nota['CodigoAutenticidade'],
-                    data_cancelamento = nota['DataCancelamento'],
-                    data_emissao = nota['DataEmissao'],
-                    data_recibo = nota['DataRecibo'],
-                    doc_tomador = nota['DocTomador'],
-                    endereco_prestacao_servico = nota['EnderecoPrestacaoServico'],
-                    link_nfe = nota['LinkNFE'],
-                    motivo_cancelamento = nota['MotivoCancelamento'],
-                    nome_tomador = nota['NomeTomador'],
-                    nosso_numero = nota['NossoNumero'],
-                    numero = nota['Numero'],
-                    numero_recibo = nota['NumeroRecibo'],
-                    substituicao_tributaria = nota['SubstituicaoTributaria'],
-                    valor = nota['Valor'],
-                    valor_iss = nota['ValorIss'],
-                    valor_nfe = nota['ValorNFE']
-                )
-
-        print("Notas atualizadas com sucesso.")
-    else:
-        print(f"Erro: {response['MensagemErro']}")
 
 
 
@@ -301,26 +231,7 @@ def generate_txt(request):
     return response
 
 
-#CONSULTA NA API
-def consultar_api():
-    # Criando o objeto cliente SOAP
-    client = Client('https://nfe.osasco.sp.gov.br/EISSNFEWebServices/NotaFiscalEletronica.svc?wsdl')
 
-    # Criando o request com os dados passados
-    request_data = {
-        'ChaveAutenticacao': '5eb04d8c-fd9a-49ba-ab45-d06d816df7ad',  # valor fixo
-        'DataInicial': date(2023, 5, 1),  # valor fixo
-        'DataFinal': date.today(),  # data de hoje
-        'NumeroReciboInicial': None,  # valor fixo
-        'NumeroReciboFinal': None,  # valor fixo
-        'NumeroReciboUnico': None  # valor fixo
-    }
-
-    # Fazendo a requisição e obtendo a resposta
-    response = client.service.Consultar(request=request_data)
-
-    # Retornando a resposta
-    return response
 
 
 # BUSCAR NOTAS (BACKUP)
@@ -590,8 +501,8 @@ def import_basecnpj(request):
     if request.method == 'POST':
         excel_file = request.FILES['excel_file']
         import_basecnpj_from_excel(excel_file)
-        return render(request, 'import_basecnpj.html', {'success': True})
-    return render(request, 'import_basecnpj.html')
+        return render(request, 'notas/import_basecnpj.html', {'success': True})
+    return render(request, 'notas/import_basecnpj.html')
 
 
 

@@ -24,5 +24,4 @@ urlpatterns = [
     path('notas-s/', GerarcsvTemplateView.as_view(), name='gerar-csv'),
     path('generate-csv-for-nota/<int:pk>', views.generate_csv_for_nota, name='generate_csv_for_nota'),
     path('buscar-notas/', views.buscar_notas, name='buscar_notas'),  
-    path('atualizar_notas/', views.atualizar_notas, name='atualizar_notas'),
 ]
