@@ -1,20 +1,22 @@
 import csv
+import os
 import re
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from decimal import Decimal
 
+import fitz  # PyMuPDF
+from django.conf import settings
 from django.contrib import messages
-from django.core.paginator import PageNotAnInteger, Paginator
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import Http404, HttpResponse, HttpResponseRedirect
-# from core.main import make_recipe - Importação para testar as coisas.
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.utils import timezone
-from django.views.generic import CreateView, DetailView, ListView
+from django.views.generic import CreateView, ListView
 from zeep import Client
 
 from .forms import BaseCNPJModelForm, NotasModelForm
-from .models import BaseCNPJ, NotaFiscal2, Notas, NumeradorLote
+from .models import NotaFiscal2, Notas, NumeradorLote
 from .tasks import import_basecnpj_from_excel
 from .utils import update_basecnpj_from_excel
 
@@ -505,6 +507,21 @@ def import_basecnpj(request):
     return render(request, 'notas/import_basecnpj.html')
 
 
+
+@login_required(login_url='/login/')
+def import_basecnpj(request):
+    if request.method == 'POST':
+        arquivo = request.FILES['arquivo']
+        filepath = os.path.join(settings.MEDIA_ROOT, arquivo.name)
+
+        with open(filepath, 'wb+') as destination:
+            for chunk in arquivo.chunks():
+                destination.write(chunk)
+
+        import_basecnpj_from_excel.delay(filepath)
+        return redirect('importar_basecnpj')
+
+    return render(request, 'notas/import_basecnpj.html')
 
 
 
