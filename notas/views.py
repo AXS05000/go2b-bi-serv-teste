@@ -710,11 +710,13 @@ def generate_csv(request):
         'id_2': lambda nota: nota.id,
         'descricao': generate_description,
         '0': lambda nota: '0',
-        'base_pis': lambda nota: round(nota.total_a_faturar * Decimal("0.0065"), 4),
-        'base_confins': lambda nota: round(nota.total_a_faturar * Decimal("0.03"), 4),
-        'base_inss': lambda nota: round(nota.total_a_faturar * Decimal("0.11"), 4),
-        'base_ir': lambda nota: round(nota.total_a_faturar * Decimal("0.048"), 4),
-        'base_cssl': lambda nota: round(nota.total_a_faturar * Decimal("0.01"), 4),
+        '0': lambda nota: '',
+        'base_ir': lambda nota: int(round(nota.total_a_faturar * Decimal("0.048"), 2)*100),
+        'base_inss': lambda nota: int(round(nota.total_a_faturar * Decimal("0.11"), 2)*100),
+        'base_confins': lambda nota: int(round(nota.total_a_faturar * Decimal("0.03"), 2)*100),
+        'base_pis': lambda nota: int(round(nota.total_a_faturar * Decimal("0.0065"), 2)*100),
+        'base_cssl': lambda nota: int(round(nota.total_a_faturar * Decimal("0.01"), 2)*100),
+        '0': lambda nota: '0',
     }
     sequential_number = 1  # iniciando o número sequencial para a segunda coluna
 
@@ -874,11 +876,12 @@ def generate_csv_for_nota(request, pk):
         'descricao': generate_description,
         '0': lambda nota: '0',
         '0': lambda nota: '',
-        'base_pis': lambda nota: round(nota.total_a_faturar * Decimal("0.0065"), 4),
-        'base_confins': lambda nota: round(nota.total_a_faturar * Decimal("0.03"), 4),
-        'base_inss': lambda nota: round(nota.total_a_faturar * Decimal("0.11"), 4),
-        'base_ir': lambda nota: round(nota.total_a_faturar * Decimal("0.048"), 4),
-        'base_cssl': lambda nota: round(nota.total_a_faturar * Decimal("0.01"), 4),
+        'base_ir': lambda nota: int(round(nota.total_a_faturar * Decimal("0.048"), 2)*100),
+        'base_inss': lambda nota: int(round(nota.total_a_faturar * Decimal("0.11"), 2)*100),
+        'base_confins': lambda nota: int(round(nota.total_a_faturar * Decimal("0.03"), 2)*100),
+        'base_pis': lambda nota: int(round(nota.total_a_faturar * Decimal("0.0065"), 2)*100),
+        'base_cssl': lambda nota: int(round(nota.total_a_faturar * Decimal("0.01"), 2)*100),
+        '0': lambda nota: '0',
     }
     sequential_number = 1  # iniciando o número sequencial para a segunda coluna
 
