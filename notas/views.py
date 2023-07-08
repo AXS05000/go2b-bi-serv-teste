@@ -710,6 +710,11 @@ def generate_csv(request):
         'id_2': lambda nota: nota.id,
         'descricao': generate_description,
         '0': lambda nota: '0',
+        'base_pis': lambda nota: round(nota.total_a_faturar * Decimal("0.0065"), 4),
+        'base_confins': lambda nota: round(nota.total_a_faturar * Decimal("0.03"), 4),
+        'base_inss': lambda nota: round(nota.total_a_faturar * Decimal("0.11"), 4),
+        'base_ir': lambda nota: round(nota.total_a_faturar * Decimal("0.048"), 4),
+        'base_cssl': lambda nota: round(nota.total_a_faturar * Decimal("0.01"), 4),
     }
     sequential_number = 1  # iniciando o número sequencial para a segunda coluna
 
