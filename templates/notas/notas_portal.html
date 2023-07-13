@@ -138,6 +138,7 @@
                   <th scope="col">Data de Emissão</th>
                   <th scope="col">Valor da Nota</th>
                   <th scope="col">Nome do cliente</th>
+                  <th scope="col">Link</th>
                 </tr>
                 </thead>
                 {% for nota in page_obj %}
@@ -147,6 +148,7 @@
                   <td><p>{{ nota.data_emissao|date:"d/m/Y" }}</p></td>
                   <td><p>R$ {{ nota.valor|floatformat:2 }}</p></td>
                   <td><p>{{ nota.nome_tomador }}</p></td>
+                  <td><p>{{ nota.LinkNFE }}</p></td>
                 </tr>
                 {% endfor %}
               </table>
