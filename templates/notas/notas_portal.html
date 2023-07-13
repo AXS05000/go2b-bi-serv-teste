@@ -148,7 +148,7 @@
                   <td><p>{{ nota.data_emissao|date:"d/m/Y" }}</p></td>
                   <td><p>R$ {{ nota.valor|floatformat:2 }}</p></td>
                   <td><p>{{ nota.nome_tomador }}</p></td>
-                  <td><a href="{{ nota.link_nfe }}" class="btn">LINK</a></td>
+                  <td><a href="{{ nota.link_nfe }}" class="btn btn-primary">LINK</a></td>
                 </tr>
                 {% endfor %}
               </table>
