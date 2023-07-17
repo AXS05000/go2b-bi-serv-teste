@@ -21,3 +21,7 @@ class DeleteCompForm(forms.Form):
 class AutenticacaoForm(forms.Form):
     autenticacao = forms.CharField(max_length=200)
     competencia = forms.CharField(max_length=200)
+
+
+class UploadFileForm(forms.Form):
+    file = forms.FileField()

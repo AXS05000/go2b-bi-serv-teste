@@ -4,6 +4,8 @@ import shutil
 import tempfile
 
 import fitz  # PyMuPDF
+# views.py
+import pandas as pd
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
@@ -12,13 +14,87 @@ from django.http import (FileResponse, Http404, HttpResponse,
 from django.shortcuts import redirect, render
 from django.urls import path
 
-from . import views
-from .forms import AutenticacaoForm, DeleteCompForm, SelecionarFuncionarioForm
+from .forms import (AutenticacaoForm, DeleteCompForm,
+                    SelecionarFuncionarioForm, UploadFileForm)
 from .models import Arquivo, Beneficios_Mala, Funcionario
 from .tasks import (importar_excel_beneficios, importar_excel_folha_de_ponto,
                     importar_excel_funcionario)
 from .utils import gerar_pdf
 from .utils2 import gerar_pdf2
+
+
+def handle_uploaded_file(file):
+    # Lê o arquivo linha por linha
+    lines = file.read().decode('utf-8').splitlines()
+
+    data = []
+    for i in range(2, len(lines)-2):  # Ignora as duas primeiras e duas últimas linhas
+        if lines[i][13] == 'A':
+            re_fc = lines[i][86:92] + lines[i][76:79]
+            re_gi = lines[i][86:92]
+            cliente_gi = lines[i][79:85]
+            data_baixa = lines[i][93:101]
+            valor_pago = lines[i][169:177]
+        elif lines[i][13] == 'B':
+            cpf = lines[i][21:32]  # Certifique-se de que esses índices estão corretos
+            autenticacao = lines[i+1][78:94] if lines[i+1][13] == 'Z' else None  # Certifique-se de que esses índices estão corretos
+            data.append({
+                'cpf': cpf, 
+                'autenticacao': autenticacao,
+                're_fc': re_fc,
+                're_gi': re_gi,
+                'cliente_gi': cliente_gi,
+                'data_baixa': data_baixa,
+                'valor_pago': valor_pago
+            })
+
+    # Converte a lista de dicionários em DataFrame
+    df = pd.DataFrame(data)
+
+    # Escreve o DataFrame em Excel
+    excel_file = io.BytesIO()
+    with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer:
+        df.to_excel(writer, sheet_name='Funcionarios', index=False)
+    excel_file.seek(0)
+
+    return excel_file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def upload_file_bet(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            excel_file = handle_uploaded_file(request.FILES['file'])
+
+            # Configura a resposta para fazer o download do arquivo Excel
+            response = HttpResponse(excel_file.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = 'attachment; filename=funcionarios.xlsx'
+
+            return response
+    else:
+        form = UploadFileForm()
+    return render(request, 'pdf/gerar_excel_banco.html', {'form': form})
+
+
+
+
+
+
+
+
 
 
 def find_and_extract_page(file, authentication):

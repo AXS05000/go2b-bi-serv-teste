@@ -13,5 +13,6 @@ urlpatterns = [
     path('delete-comp/', views.delete_comp_view, name='delete_comp'),
     path('download/', views.download_file, name='download_file'),
     path('aut/<str:competencia>/<str:autenticacao>/', views.download_file_url, name='download_file_url'),
+    path('upload-bet/', views.upload_file_bet, name='upload_file_bet'),
 
 ]
