@@ -15,5 +15,6 @@ urlpatterns = [
     path('aut/<str:competencia>/<str:autenticacao>/', views.download_file_url, name='download_file_url'),
     path('upload-bet/', views.upload_file_bet, name='upload_file_bet'),
     path('processar-arquivos/', views.process_files_view),
+    path('processar-arquivos-bradesco/', views.process_files_view_bradesco),
 
 ]
