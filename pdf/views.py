@@ -3,6 +3,7 @@ import os
 import shutil
 import tempfile
 
+import chardet
 import fitz  # PyMuPDF
 # views.py
 import pandas as pd
@@ -24,6 +25,40 @@ from .utils2 import gerar_pdf2
 
 
 def handle_uploaded_file(file):
+    # Detecta a codificação do arquivo
+    rawdata = file.read()
+    result = chardet.detect(rawdata)
+    encoding = result['encoding']
+
+    # Lê o arquivo linha por linha usando a codificação detectada
+    lines = rawdata.decode(encoding).splitlines()
+
+    data = []
+    for i in range(2, len(lines)-2):  # Ignora as duas primeiras e duas últimas linhas
+        if lines[i][13] == 'A':
+            re_fc = lines[i][86:92] + lines[i][76:79]
+            re_gi = lines[i][86:92]
+            cliente_gi = lines[i][79:85]
+            data_baixa = lines[i][93:101]
+            valor_pago = lines[i][169:177]
+        elif lines[i][13] == 'B':
+            cpf = lines[i][21:32]  # Certifique-se de que esses índices estão corretos
+            autenticacao = lines[i+1][78:94] if lines[i+1][13] == 'Z' else None  # Certifique-se de que esses índices estão corretos
+            data.append({
+                'cpf': cpf, 
+                'autenticacao': autenticacao,
+                're_fc': re_fc,
+                're_gi': re_gi,
+                'cliente_gi': cliente_gi,
+                'data_baixa': data_baixa,
+                'valor_pago': valor_pago
+            })
+    df = pd.DataFrame(data)
+    return df
+
+
+
+def handle_uploaded_file2(file):
     # Lê o arquivo linha por linha
     lines = file.read().decode('utf-8').splitlines()
 
@@ -59,17 +94,23 @@ def handle_uploaded_file(file):
 
     return excel_file
 
+def process_local_folder(folder_path):
+    # Percorre todas as subpastas da pasta fornecida
+    for root, dirs, files in os.walk(folder_path):
+        # Processa cada arquivo .ret
+        for filename in files:
+            if filename.endswith('.ret'):
+                filepath = os.path.join(root, filename)
+                with open(filepath, 'rb') as file:
+                    df = handle_uploaded_file(file)
+
+                # Salva o DataFrame como um arquivo Excel na mesma pasta
+                df.to_excel(filepath.replace('.ret', '.xlsx'), index=False)
 
 
-
-
-
-
-
-
-
-
-
+def process_files_view(request):
+    process_local_folder(r"C:\Users\Alex Sobreira\Desktop\Retornos")
+    return HttpResponse("Arquivos processados com sucesso")
 
 
 
@@ -77,7 +118,7 @@ def upload_file_bet(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            excel_file = handle_uploaded_file(request.FILES['file'])
+            excel_file = handle_uploaded_file2(request.FILES['file'])
 
             # Configura a resposta para fazer o download do arquivo Excel
             response = HttpResponse(excel_file.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
