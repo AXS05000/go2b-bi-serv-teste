@@ -68,12 +68,109 @@ def process_local_folder_bradesco(folder_path):
 
 
 def process_files_view_bradesco(request):
-    process_local_folder_bradesco(r"C:\Users\Alex Sobreira\Desktop\Retornos_Bradesco")
+    process_local_folder_bradesco(r"C:\Users\Alex Sobreira\Desktop\BRADESCO")
     return HttpResponse("Arquivos processados com sucesso")
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def extracao_retorno_itau(file):
+    # Detecta a codificação do arquivo
+    rawdata = file.read()
+    result = chardet.detect(rawdata)
+    encoding = result['encoding']
+
+    # Lê o arquivo linha por linha usando a codificação detectada
+    lines = rawdata.decode(encoding).splitlines()
+
+    data = []
+    for i in range(2, len(lines)-2):  # Ignora as duas primeiras e duas últimas linhas
+        if lines[i][13] == 'A':
+            cpf = lines[i][206:217]
+            data_baixa = lines[i][93:101]
+            valor_pago = lines[i][169:177]
+            autenticacao = lines[i+1][14:85]  + '-CTRL: ' +lines[i+1][103:118] if lines[i+1][13] == 'Z' else None  # Certifique-se de que esses índices estão corretos
+            data.append({
+                'cpf': cpf,
+                'autenticacao': autenticacao,
+                'data_baixa': data_baixa,
+                'valor_pago': valor_pago
+            })
+    df = pd.DataFrame(data)
+    return df
+
+
+
+def process_local_folder_itau(folder_path):
+    print(f"Processing folder: {folder_path}")
+    # Percorre todas as subpastas da pasta fornecida
+    for root, dirs, files in os.walk(folder_path):
+        print(f"Found {len(files)} files in {root}")
+        # Processa cada arquivo .RET
+        for filename in files:
+            print(f"Processing file: {filename}")
+            if filename.lower().endswith('.ret'):  # Agora isso verificará tanto '.RET' quanto '.ret'
+                filepath = os.path.join(root, filename)
+                print(f"Processing RET file: {filepath}")
+                with open(filepath, 'rb') as file:
+                    df = extracao_retorno_itau(file)
+
+                # Salva o DataFrame como um arquivo Excel na mesma pasta
+                excel_path = filepath.replace('.ret', '.xlsx').replace('.RET', '.xlsx')
+                print(f"Saving DataFrame to Excel file: {excel_path}")
+                df.to_excel(excel_path, index=False)
+                print(f"Saved Excel file: {excel_path}")
+
+
+
+
+def process_files_view_itau(request):
+    process_local_folder_itau(r"C:\Users\Alex Sobreira\Desktop\ITAU")
+    return HttpResponse("Arquivos processados com sucesso")
+
+
+
+
+
+
+
+
+def upload_file_bet_itau(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            df = extracao_retorno_itau(request.FILES['file'])
+
+            # Escreve o DataFrame em um arquivo Excel
+            excel_file = io.BytesIO()
+            with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer:
+                df.to_excel(writer, sheet_name='Funcionarios', index=False)
+            excel_file.seek(0)
+
+            # Configura a resposta para fazer o download do arquivo Excel
+            response = HttpResponse(excel_file.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = 'attachment; filename=funcionarios.xlsx'
+
+            return response
+    else:
+        form = UploadFileForm()
+    return render(request, 'pdf/gerar_excel_banco2.html', {'form': form})
 
 
 
@@ -370,7 +467,7 @@ def process_local_folder(folder_path):
 
 
 def process_files_view(request):
-    process_local_folder(r"C:\Users\Alex Sobreira\Desktop\Retornos")
+    process_local_folder(r"C:\Users\Alex Sobreira\Desktop\T")
     return HttpResponse("Arquivos processados com sucesso")
 
 
