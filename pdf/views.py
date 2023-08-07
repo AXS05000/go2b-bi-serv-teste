@@ -1,5 +1,6 @@
 import io
 import os
+import re
 import shutil
 import tempfile
 
@@ -17,11 +18,92 @@ from django.urls import path
 
 from .forms import (AutenticacaoForm, DeleteCompForm,
                     SelecionarFuncionarioForm, UploadFileForm)
-from .models import Arquivo, Beneficios_Mala, Funcionario
+from .models import Arquivo, Arquivo_PDF, Beneficios_Mala, Funcionario
 from .tasks import (importar_excel_beneficios, importar_excel_folha_de_ponto,
                     importar_excel_funcionario)
 from .utils import gerar_pdf
 from .utils2 import gerar_pdf2
+
+
+def extract_info_from_page(page):
+    text = page.get_text("text")
+
+    # Use expressões regulares para extrair as informações
+    cpf_cnpj = re.findall(r"CPF/CNPJ:\s*([\d.-]+)", text)
+    data_pagamento = re.findall(r"DATA (?:DO PAGAMENTO|DA TRANSFERENCIA):\s*([\d/]+)", text)
+    valor = re.findall(r"VALOR:\s*([\d.,]+)", text)
+    nr_autenticacao = re.findall(r"NR. AUTENTICACAO:\s*([.\d\w]+)", text)
+
+    # Certifique-se de que as listas não estejam vazias antes de pegar o primeiro elemento
+    cpf_cnpj = cpf_cnpj[0] if cpf_cnpj else ''
+    data_pagamento = data_pagamento[0] if data_pagamento else ''
+    valor = valor[0] if valor else ''
+    nr_autenticacao = nr_autenticacao[0] if nr_autenticacao else ''
+
+    return cpf_cnpj, data_pagamento, valor, nr_autenticacao
+
+
+def find_and_extract_page_para_pdf(file):
+    doc = fitz.open(stream=file.read(), filetype="pdf")
+    all_info = []
+    for i in range(len(doc)):
+        page = doc.load_page(i)
+        info = extract_info_from_page(page)
+        all_info.append(info)
+    doc.close()
+    return all_info
+
+
+
+
+
+def upload_file_banco_pdf(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            new_file = Arquivo_PDF(pdf=request.FILES['file'])
+            new_file.save()
+
+            all_info = find_and_extract_page_para_pdf(new_file.pdf)
+            
+            # Transforme as informações coletadas em um DataFrame pandas
+            df = pd.DataFrame(all_info, columns=["CPF/CNPJ", "Data do Pagamento", "Valor", "Nr. Autenticacao"])
+            
+            # Obtenha apenas o nome do arquivo, sem o diretório
+            filename = os.path.basename(new_file.pdf.name)
+            
+            # Crie um diretório para os arquivos .xlsx se ele não existir
+            os.makedirs('xlsx_files', exist_ok=True)
+            
+            # Escreva o DataFrame em um arquivo Excel
+            df.to_excel("xlsx_files/Informações_extraídas_" + filename + ".xlsx")
+
+            return redirect('upload_banco_pdf')
+    else:
+        form = UploadFileForm()
+    return render(request, 'notas/upload_pdf_banco.html', {'form': form})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def extracao_retorno_bradesco(file):
@@ -198,7 +280,14 @@ def find_and_extract_page(file, authentication):
     return None
 
 
-
+def download_file_url(request, competencia, autenticacao):
+    files = Arquivo.objects.filter(competencia=competencia)
+    for file_instance in files:
+        file = file_instance.pdf
+        extracted_file = find_and_extract_page(file, autenticacao)
+        if extracted_file is not None:
+            return FileResponse(extracted_file, as_attachment=True, filename=autenticacao + '.pdf')
+    return HttpResponse("Autenticação não encontrada.")
 
 
 
@@ -221,14 +310,7 @@ def download_file(request):
     return render(request, 'download.html', {'form': form})
 
 
-def download_file_url(request, competencia, autenticacao):
-    files = Arquivo.objects.filter(competencia=competencia)
-    for file_instance in files:
-        file = file_instance.pdf
-        extracted_file = find_and_extract_page(file, autenticacao)
-        if extracted_file is not None:
-            return FileResponse(extracted_file, as_attachment=True, filename=autenticacao + '.pdf')
-    return HttpResponse("Autenticação não encontrada.")
+
 
 
 

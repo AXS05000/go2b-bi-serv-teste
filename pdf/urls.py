@@ -8,6 +8,7 @@ urlpatterns = [
     path('gerar-pdf/<int:codigo_fc>/<int:comp>/', views.gerar_pdf_direto, name='gerar_pdf_direto'),
     path('gerar-pdf-2/<int:codigo_fc>/<int:comp>/', views.gerar_pdf_direto2, name='gerar_pdf_direto2'),
     path('upload/', views.upload_excel, name='upload_excel'),
+    path('upload-pdf-banco/', views.upload_file_banco_pdf, name='upload_banco_pdf'),
     path('upload-bene/', views.upload_excel_bene, name='upload_excel_beneficio'),
     path('upload-folha/', views.upload_excel_folha, name='upload_excel_folha'),
     path('delete-comp/', views.delete_comp_view, name='delete_comp'),

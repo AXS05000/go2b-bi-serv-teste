@@ -9,7 +9,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render
 from zeep import Client
 
-from .models import BaseCNPJ, NotaFiscal2
+from .models import BaseCNPJ, BaseInfoContratos, NotaFiscal2
 
 
 @shared_task
@@ -56,6 +56,33 @@ def import_basecnpj_from_excel(filepath):
         for row in page.object_list:
             defaults = non_null_defaults(row, fields)
             BaseCNPJ.objects.update_or_create(id=row[0], defaults=defaults)
+
+    # Remove the file after processing
+    os.remove(filepath)
+
+
+@shared_task
+def import_baseinfo_from_excel(filepath):
+    workbook = openpyxl.load_workbook(filepath, read_only=True)
+    sheet = workbook.active
+
+    rows = list(sheet.iter_rows(min_row=2, values_only=True))
+    paginator = Paginator(rows, 50) 
+
+    fields = [
+            'cod_cliente',
+            'contrato',
+            'cargo',
+            'valor_hora',
+            'data_inicio_cto',
+            'contrato_ativo',
+        ] 
+
+    for page_number in paginator.page_range:
+        page = paginator.page(page_number)
+        for row in page.object_list:
+            defaults = non_null_defaults(row, fields)
+            BaseInfoContratos.objects.update_or_create(id=row[0], defaults=defaults)
 
     # Remove the file after processing
     os.remove(filepath)

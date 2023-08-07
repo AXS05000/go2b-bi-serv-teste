@@ -171,6 +171,13 @@ class Arquivo(models.Model):
 
     def __str__(self):
         return f'{self.pdf}'
+    
+
+class Arquivo_PDF(models.Model):
+    pdf = models.FileField(upload_to='pdfs/')
+
+    def __str__(self):
+        return f'{self.pdf}'
 
 
 
