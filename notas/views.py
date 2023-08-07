@@ -867,6 +867,75 @@ def generate_csv_for_nota(request, pk):
         # aqui, você pode adicionar os outros casos 'MOT' e 'DISTRIBUIÇÃO' de maneira similar
         return descricao
 
+
+    def calculate_base_ir(nota):
+        if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
+            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 4)
+        elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
+            total_a_faturar_nota = round(nota.total_valor_outros, 4)
+        else:
+            total_a_faturar_nota = round(nota.total_a_faturar, 4) 
+        base_ir = total_a_faturar_nota * Decimal("0.048")
+        return int(round(base_ir, 2)*100)
+    
+    def calculate_base_pis(nota):
+        if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
+            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 4)
+        elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
+            total_a_faturar_nota = round(nota.total_valor_outros, 4)
+        else:
+            total_a_faturar_nota = round(nota.total_a_faturar, 4) 
+        base_pis = total_a_faturar_nota * Decimal("0.0065")
+        return int(round(base_pis, 2)*100)
+    
+    def calculate_base_confins(nota):
+        if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
+            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 4)
+        elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
+            total_a_faturar_nota = round(nota.total_valor_outros, 4)
+        else:
+            total_a_faturar_nota = round(nota.total_a_faturar, 4) 
+        base_confins = total_a_faturar_nota * Decimal("0.03")
+        return int(round(base_confins, 2)*100)
+    
+
+    def calculate_base_inss(nota):
+        if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
+            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 4)
+        elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
+            total_a_faturar_nota = round(nota.total_valor_outros, 4)
+        else:
+            total_a_faturar_nota = round(nota.total_a_faturar, 4) 
+        base_inss = total_a_faturar_nota * Decimal("0.11")
+        return int(round(base_inss, 2)*100)
+    
+
+    def calculate_base_cssl(nota):
+        if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
+            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 4)
+        elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
+            total_a_faturar_nota = round(nota.total_valor_outros, 4)
+        else:
+            total_a_faturar_nota = round(nota.total_a_faturar, 4) 
+        base_cssl = total_a_faturar_nota * Decimal("0.01")
+        return int(round(base_cssl, 2)*100)
+    
+
+    def calculate_base_iss(nota):
+        if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
+            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 4)
+        elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
+            total_a_faturar_nota = round(nota.total_valor_outros, 4)
+        else:
+            total_a_faturar_nota = round(nota.total_a_faturar, 4) 
+        base_iss = total_a_faturar_nota * nota.cnpj_da_nota.iss
+        return int(round(base_iss, 2)*100)
+        
+
+    
+        
+        
+    
     field_mappings = {
         'D': lambda nota: 'D',
         'sequencial': lambda nota: nota.id,
@@ -892,11 +961,11 @@ def generate_csv_for_nota(request, pk):
         'descricao': generate_description,
         '0': lambda nota: '0',
         '0': lambda nota: '',
-        'base_ir': lambda nota: int(round(nota.total_a_faturar * Decimal("0.048"), 2)*100),
-        'base_inss': lambda nota: int(round(nota.total_a_faturar * Decimal("0.11"), 2)*100),
-        'base_confins': lambda nota: int(round(nota.total_a_faturar * Decimal("0.03"), 2)*100),
-        'base_pis': lambda nota: int(round(nota.total_a_faturar * Decimal("0.0065"), 2)*100),
-        'base_cssl': lambda nota: int(round(nota.total_a_faturar * Decimal("0.01"), 2)*100),
+        'base_ir': calculate_base_ir,
+        'base_inss': calculate_base_inss,
+        'base_confins': calculate_base_iss,
+        'base_pis': calculate_base_pis,
+        'base_cssl': calculate_base_cssl,
         '0': lambda nota: '0',
     }
     sequential_number = 1  # iniciando o número sequencial para a segunda coluna
