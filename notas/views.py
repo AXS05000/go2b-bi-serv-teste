@@ -618,7 +618,11 @@ def generate_csv(request):
         base_inss = total_a_faturar_nota * Decimal("0.11")
         base_ir = total_a_faturar_nota * Decimal("0.048")
         base_cssl = total_a_faturar_nota * Decimal("0.01")
-        base_iss = total_a_faturar_nota * nota.cnpj_da_nota.iss
+        base_txadm = total_a_faturar_nota * nota.cnpj_da_nota.tx_adm
+        if nota.cnpj_da_nota.tipo_de_cliente == "MOT":
+            base_iss = base_txadm * nota.cnpj_da_nota.iss
+        else:
+            base_iss = total_a_faturar_nota * nota.cnpj_da_nota.iss
         total_liquido_descricao = round(total_a_faturar_nota - (base_pis + base_confins + base_inss + base_ir + base_cssl + base_iss) , 4)
 
 
@@ -643,7 +647,7 @@ def generate_csv(request):
                 if baseinfocontratos and quantidade_hora:
                     total_bruto_cargo = round(baseinfocontratos.valor_hora * Decimal(str(quantidade_hora)), 4)
                     total_bruto_cargo = str(total_bruto_cargo).replace('.', ',')  # substitui o ponto por vírgula
-                    descricao += f"CARGO: {baseinfocontratos.cargo} - QTD HS: {quantidade_hora}- VALOR HORA: R${baseinfocontratos.valor_hora}|TOTAL BRUTO CARGO: R$ {total_bruto_cargo}|"
+                    descricao += f"CARGO: {baseinfocontratos.cargo} - QTD HS: {quantidade_hora}- VALOR HORA: R${baseinfocontratos.valor_hora}|TOTAL BRUTO CARGO: R$ {total_bruto_cargo}| TX ADM / Lucro: {nota.cnpj_da_nota.tx_adm}% - R$ {base_txadm} (Base ISS)|"
             descricao += f"||TOTAL A FATURAR: R$ {format(total_a_faturar_nota, '.4f').replace('.', ',')}|BASE PARA RETENÇÕES:|RETENÇÃO CONFORME LEI 10833/03 - PIS: 0,0065: R$ {format(round(base_pis, 2), '2f').replace('.', ',')}|RETENÇÃO CONFORME LEI 10833/03 - CONFINS: 0,03: R$ {format(round(base_confins, 2), '2f').replace('.', ',')}|INSS RETENÇÃO: 0,11: R$ {format(round(base_inss, 2), '2f').replace('.', ',')}|I.R. RETENÇÃO: 0,048: R$ {format(round(base_ir, 2), '2f').replace('.', ',')}|RETENÇÃO CONFORME LEI 10833/03 - CSLL: 0,01: R$ {format(round(base_cssl, 2), '2f').replace('.', ',')}|RETENÇÃO CONFORME LEI 116/03 - ISS: {format(round(base_iss, 2), '2f').replace('.', ',')}|TOTAL LIQUIDO A RECEBER: R$ {format(total_liquido_descricao, '.4f').replace('.', ',')}|"
 
 
@@ -836,7 +840,11 @@ def generate_csv_for_nota(request, pk):
         base_inss = total_a_faturar_nota * Decimal("0.11")
         base_ir = total_a_faturar_nota * Decimal("0.048")
         base_cssl = total_a_faturar_nota * Decimal("0.01")
-        base_iss = total_a_faturar_nota * nota.cnpj_da_nota.iss
+        base_txadm = total_a_faturar_nota * nota.cnpj_da_nota.tx_adm
+        if nota.cnpj_da_nota.tipo_de_cliente == "MOT":
+            base_iss = base_txadm * nota.cnpj_da_nota.iss
+        else:
+            base_iss = total_a_faturar_nota * nota.cnpj_da_nota.iss
         total_liquido_descricao = round(total_a_faturar_nota - (base_pis + base_confins + base_inss + base_ir + base_cssl + base_iss) , 4)
 
 
@@ -861,7 +869,7 @@ def generate_csv_for_nota(request, pk):
                 if baseinfocontratos and quantidade_hora:
                     total_bruto_cargo = round(baseinfocontratos.valor_hora * Decimal(str(quantidade_hora)), 4)
                     total_bruto_cargo = str(total_bruto_cargo).replace('.', ',')  # substitui o ponto por vírgula
-                    descricao += f"CARGO: {baseinfocontratos.cargo} - QTD HS: {quantidade_hora}- VALOR HORA: R${baseinfocontratos.valor_hora}|TOTAL BRUTO CARGO: R$ {total_bruto_cargo}|"
+                    descricao += f"CARGO: {baseinfocontratos.cargo} - QTD HS: {quantidade_hora}- VALOR HORA: R${baseinfocontratos.valor_hora}|TOTAL BRUTO CARGO: R$ {total_bruto_cargo}| TX ADM / Lucro: {nota.cnpj_da_nota.tx_adm}% - R$ {base_txadm} (Base ISS)|"
             descricao += f"||TOTAL A FATURAR: R$ {format(total_a_faturar_nota, '.4f').replace('.', ',')}|BASE PARA RETENÇÕES:|RETENÇÃO CONFORME LEI 10833/03 - PIS: 0,0065: R$ {format(round(base_pis, 2), '2f').replace('.', ',')}|RETENÇÃO CONFORME LEI 10833/03 - CONFINS: 0,03: R$ {format(round(base_confins, 2), '2f').replace('.', ',')}|INSS RETENÇÃO: 0,11: R$ {format(round(base_inss, 2), '2f').replace('.', ',')}|I.R. RETENÇÃO: 0,048: R$ {format(round(base_ir, 2), '2f').replace('.', ',')}|RETENÇÃO CONFORME LEI 10833/03 - CSLL: 0,01: R$ {format(round(base_cssl, 2), '2f').replace('.', ',')}|RETENÇÃO CONFORME LEI 116/03 - ISS: {format(round(base_iss, 2), '2f').replace('.', ',')}|TOTAL LIQUIDO A RECEBER: R$ {format(total_liquido_descricao, '.4f').replace('.', ',')}|"
 
 
