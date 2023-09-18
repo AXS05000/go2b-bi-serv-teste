@@ -150,7 +150,7 @@ def process_local_folder_bradesco(folder_path):
 
 
 def process_files_view_bradesco(request):
-    process_local_folder_bradesco(r"C:\Users\Alex Sobreira\Desktop\BRADESCO")
+    process_local_folder_bradesco(r"C:\Users\Alex Sobreira\Desktop\TRABALHADO AUTENTICAÇÕES\TRATATIVA AGOSTO SEM AUTENTICAÇÃO\BRADESCO")
     return HttpResponse("Arquivos processados com sucesso")
 
 
@@ -223,7 +223,7 @@ def process_local_folder_itau(folder_path):
 
 
 def process_files_view_itau(request):
-    process_local_folder_itau(r"C:\Users\Alex Sobreira\Desktop\ITAU")
+    process_local_folder_itau(r"C:\Users\Alex Sobreira\Desktop\TRABALHADO AUTENTICAÇÕES\TRATATIVA AGOSTO SEM AUTENTICAÇÃO\ITAU")
     return HttpResponse("Arquivos processados com sucesso")
 
 
@@ -549,7 +549,7 @@ def process_local_folder(folder_path):
 
 
 def process_files_view(request):
-    process_local_folder(r"C:\Users\Alex Sobreira\Desktop\T")
+    process_local_folder(r"C:\Users\Alex Sobreira\Desktop\TRABALHADO AUTENTICAÇÕES\TRATATIVA AGOSTO SEM AUTENTICAÇÃO\BB")
     return HttpResponse("Arquivos processados com sucesso")
 
 
