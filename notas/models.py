@@ -57,7 +57,7 @@ class BaseCNPJ(models.Model):
     cep = models.CharField('Cep', max_length=8)
     nome_cliente = models.CharField('Nome Cliente', max_length=50)
     tipo_de_servico = models.CharField('Tipo de Serviço', max_length=5)
-    iss = models.DecimalField('ISS', max_digits=4, decimal_places=2)
+    iss = models.DecimalField('ISS', max_digits=4, decimal_places=4)
     unidade = models.CharField('Unidade', max_length=55)
     mcu = models.CharField('MCU', max_length=15)
     tipo_de_cliente = models.CharField(
