@@ -819,7 +819,7 @@ def generate_csv_for_nota(request, pk):
     response['Content-Disposition'] = 'attachment; filename="notas.csv"'
 
     writer = csv.writer(response, delimiter=';')
-    today = timezone.now().strftime("%Y-%m-%d")
+    today = timezone.now().strftime("%d/%m/%Y")
     test_marker = 'T' if 'test' in request.GET else ''
     first_row = ['H', today, today, test_marker, '18504752000155']
     writer.writerow(first_row)
