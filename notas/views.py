@@ -76,7 +76,7 @@ class Notas_FiscaisView(ListView):
 class GerarcsvTemplateView(ListView):
     model = Notas
     template_name = 'notas/notas_do_sistema.html'
-    paginate_by = 20
+    paginate_by = 50
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
