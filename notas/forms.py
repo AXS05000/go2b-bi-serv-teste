@@ -2,16 +2,23 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.core.mail.message import EmailMessage
 
-from .models import BaseCNPJ, Notas
+from .models import BaseCNPJ, BaseInfoContratos, Notas
 
 
 class NotasModelForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         for field in self.Meta.required:
             self.fields[field].required = True
+
+        # Filtrar apenas contratos ativos
+        self.fields['baseinfocontratos'].queryset = BaseInfoContratos.objects.filter(contrato_ativo=True)
+        
+        # O mesmo para os demais campos
+        for i in range(2, 9):
+            self.fields[f'baseinfocontratos{i}'].queryset = BaseInfoContratos.objects.filter(contrato_ativo=True)
+
 
     class Meta:
         model = Notas

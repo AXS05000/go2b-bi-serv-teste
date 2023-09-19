@@ -294,8 +294,6 @@ class NotaFiscalCreateView(CreateView):
     def form_valid(self, form):
         messages.success(self.request, 'Nota salva com sucesso.')
         return super().form_valid(form)
-    
-    
 
     def form_invalid(self, form):
         messages.error(self.request, 'Erro ao salvar o formulário, por favor verifique as informações preenchidas.')
