@@ -783,13 +783,13 @@ def generate_csv(request):
         'id_2': lambda nota: nota.id,
         'descricao': generate_description,
         '0': lambda nota: '0',
-        '000': lambda nota: '',
+        'campo_em_branco_1': lambda nota: '',
         'base_ir': calculate_base_ir,
         'base_inss': calculate_base_inss,
         'base_confins': calculate_base_confins,
         'base_pis': calculate_base_pis,
         'base_cssl': calculate_base_cssl,
-        '0000': lambda nota: '0',
+        'campo_em_branco_2': lambda nota: '0',
     }
     sequential_number = 1  # iniciando o número sequencial para a segunda coluna
 
@@ -1016,13 +1016,13 @@ def generate_csv_for_nota(request, pk):
         'id_2': lambda nota: nota.id,
         'descricao': generate_description,
         '0': lambda nota: '0',
-        '0': lambda nota: '',
+        'campo_em_branco_1': lambda nota: '',
         'base_ir': calculate_base_ir,
         'base_inss': calculate_base_inss,
         'base_confins': calculate_base_confins,
         'base_pis': calculate_base_pis,
         'base_cssl': calculate_base_cssl,
-        '0': lambda nota: '0',
+        'campo_em_branco_2': lambda nota: '0',
     }
     sequential_number = 1  # iniciando o número sequencial para a segunda coluna
 
