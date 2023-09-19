@@ -989,8 +989,8 @@ def generate_csv_for_nota(request, pk):
             total_a_faturar_nota = round(nota.total_valor_outros, 2)
         else:
             total_a_faturar_nota = round(nota.total_a_faturar, 2) 
-        valor_nota_import_sist = total_a_faturar_nota
-        return valor_nota_import_sist
+        valor_nota_import_sist2 = total_a_faturar_nota
+        return valor_nota_import_sist2
     
     field_mappings = {
         'D': lambda nota: 'D',
