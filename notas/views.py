@@ -758,6 +758,17 @@ def generate_csv(request):
             total_a_faturar_nota = round(nota.total_a_faturar, 2) 
         base_cssl = total_a_faturar_nota * Decimal("0.01")
         return int(round(base_cssl, 2)*100)
+    
+
+    def valor_nota_import(nota):
+        if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
+            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 2)
+        elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
+            total_a_faturar_nota = round(nota.total_valor_outros, 2)
+        else:
+            total_a_faturar_nota = round(nota.total_a_faturar, 2) 
+        valor_nota_import_sist = total_a_faturar_nota
+        return valor_nota_import_sist * 100
 
     field_mappings = {
         'D': lambda nota: 'D',
@@ -765,7 +776,7 @@ def generate_csv(request):
         'id': lambda nota: nota.id,
         'data_emissao': lambda nota: today,
         'N': lambda nota: 'N',
-        'field_total': lambda nota: nota.total_quantidade_de_horas,
+        'field_total': valor_nota_import,
         'cnpj_tipo_de_servico': lambda nota: getattr(nota.cnpj_da_nota, 'tipo_de_servico', ''),
         'S': lambda nota: 'S',
         'sempre_em_branco': lambda nota: '',
@@ -857,7 +868,7 @@ def generate_csv_for_nota(request, pk):
                 if baseinfocontratos and quantidade_hora:
                     total_bruto_cargo = round(baseinfocontratos.valor_hora * Decimal(str(quantidade_hora)), 2)
                     total_bruto_cargo = str(total_bruto_cargo).replace('.', ',')  # substitui o ponto por vírgula
-                    descricao += f"CARGO: {baseinfocontratos.cargo} - QTD HS: {quantidade_hora}- VALOR HORA: R${baseinfocontratos.valor_hora} TOTAL BRUTO CARGO: R$ {total_bruto_cargo}|"
+                    descricao += f"CARGO: {baseinfocontratos.cargo} - QTD HS: {round(Decimal(str(quantidade_hora)), 2)}- VALOR HORA: R${baseinfocontratos.valor_hora} TOTAL BRUTO CARGO: R$ {total_bruto_cargo}|"
             descricao += f"||TOTAL A FATURAR: R$ {format(total_a_faturar_nota, '.2f').replace('.', ',')}|BASE PARA RETENÇÕES:|RETENÇÃO CONFORME LEI 10833/03 - PIS: 0,0065: R$ {format(round(base_pis, 2), '2f').replace('.', ',')}|RETENÇÃO CONFORME LEI 10833/03 - CONFINS: 0,03: R$ {format(round(base_confins, 2), '2f').replace('.', ',')}|INSS RETENÇÃO: 0,11: R$ {format(round(base_inss, 2), '2f').replace('.', ',')}|I.R. RETENÇÃO: 0,048: R$ {format(round(base_ir, 2), '2f').replace('.', ',')}|RETENÇÃO CONFORME LEI 10833/03 - CSLL: 0,01: R$ {format(round(base_cssl, 2), '2f').replace('.', ',')}|RETENÇÃO CONFORME LEI 116/03 - ISS: {format(round(base_iss, 2), '2f').replace('.', ',')}|TOTAL LIQUIDO A RECEBER: R$ {format(total_liquido_descricao, '.2f').replace('.', ',')}|"
 
 
@@ -869,7 +880,7 @@ def generate_csv_for_nota(request, pk):
                 if baseinfocontratos and quantidade_hora:
                     total_bruto_cargo = round(baseinfocontratos.valor_hora * Decimal(str(quantidade_hora)), 2)
                     total_bruto_cargo = str(total_bruto_cargo).replace('.', ',')  # substitui o ponto por vírgula
-                    descricao += f"CARGO: {baseinfocontratos.cargo} - QTD HS: {quantidade_hora}- VALOR HORA: R${baseinfocontratos.valor_hora}|TOTAL BRUTO CARGO: R$ {total_bruto_cargo}| TX ADM / Lucro: {nota.cnpj_da_nota.tx_adm}% - R$ {base_txadm} (Base ISS)|"
+                    descricao += f"CARGO: {baseinfocontratos.cargo} - QTD HS: {round(Decimal(str(quantidade_hora)), 2)}- VALOR HORA: R${baseinfocontratos.valor_hora}|TOTAL BRUTO CARGO: R$ {total_bruto_cargo}| TX ADM / Lucro: {nota.cnpj_da_nota.tx_adm}% - R$ {base_txadm} (Base ISS)|"
             descricao += f"||TOTAL A FATURAR: R$ {format(total_a_faturar_nota, '.2f').replace('.', ',')}|BASE PARA RETENÇÕES:|RETENÇÃO CONFORME LEI 10833/03 - PIS: 0,0065: R$ {format(round(base_pis, 2), '2f').replace('.', ',')}|RETENÇÃO CONFORME LEI 10833/03 - CONFINS: 0,03: R$ {format(round(base_confins, 2), '2f').replace('.', ',')}|INSS RETENÇÃO: 0,11: R$ {format(round(base_inss, 2), '2f').replace('.', ',')}|I.R. RETENÇÃO: 0,048: R$ {format(round(base_ir, 2), '2f').replace('.', ',')}|RETENÇÃO CONFORME LEI 10833/03 - CSLL: 0,01: R$ {format(round(base_cssl, 2), '2f').replace('.', ',')}|RETENÇÃO CONFORME LEI 116/03 - ISS: {format(round(base_iss, 2), '2f').replace('.', ',')}|TOTAL LIQUIDO A RECEBER: R$ {format(total_liquido_descricao, '.2f').replace('.', ',')}|"
 
 
@@ -881,7 +892,7 @@ def generate_csv_for_nota(request, pk):
                 if baseinfocontratos and quantidade_hora:
                     total_bruto_cargo = round(baseinfocontratos.valor_hora * Decimal(str(quantidade_hora)), 2)
                     total_bruto_cargo = str(total_bruto_cargo).replace('.', ',')  # substitui o ponto por vírgula
-                    descricao += f"CARGO: {baseinfocontratos.cargo} - QTD HS: {quantidade_hora}- VALOR HORA: R${baseinfocontratos.valor_hora} TOTAL BRUTO CARGO: R$ {total_bruto_cargo}|"
+                    descricao += f"CARGO: {baseinfocontratos.cargo} - QTD HS: {round(Decimal(str(quantidade_hora)), 2)}- VALOR HORA: R${baseinfocontratos.valor_hora} TOTAL BRUTO CARGO: R$ {total_bruto_cargo}|"
             descricao += f"||TOTAL A FATURAR: R$ {format(total_a_faturar_nota, '.2f').replace('.', ',')}|BASE PARA RETENÇÕES:|RETENÇÃO CONFORME LEI 10833/03 - PIS: 0,0065: R$ {format(round(base_pis, 2), '2f').replace('.', ',')}|RETENÇÃO CONFORME LEI 10833/03 - CONFINS: 0,03: R$ {format(round(base_confins, 2), '2f').replace('.', ',')}|INSS RETENÇÃO: 0,11: R$ {format(round(base_inss, 2), '2f').replace('.', ',')}|I.R. RETENÇÃO: 0,048: R$ {format(round(base_ir, 2), '2f').replace('.', ',')}|RETENÇÃO CONFORME LEI 10833/03 - CSLL: 0,01: R$ {format(round(base_cssl, 2), '2f').replace('.', ',')}|RETENÇÃO CONFORME LEI 116/03 - ISS: {format(round(base_iss, 2), '2f').replace('.', ',')}|TOTAL LIQUIDO A RECEBER: R$ {format(total_liquido_descricao, '.2f').replace('.', ',')}|"
 
 
@@ -898,7 +909,7 @@ def generate_csv_for_nota(request, pk):
                     total_bruto_cargo = round(baseinfocontratos.valor_hora * Decimal(str(quantidade_hora)), 2)
                     total_bruto_cargo_ans = round(total_bruto_cargo - (total_bruto_cargo * Decimal(str(nota.porcentagem_ans))), 2)
                     total_bruto_cargo_ans = str(total_bruto_cargo_ans).replace('.', ',')  # substitui o ponto por vírgula
-                    descricao += f"CARGO: {baseinfocontratos.cargo} QTD HS: {quantidade_hora} VALOR HORA: R${baseinfocontratos.valor_hora} TOTAL BRUTO CARGO COM DESC: R$ {total_bruto_cargo_ans}|"
+                    descricao += f"CARGO: {baseinfocontratos.cargo} QTD HS: {round(Decimal(str(quantidade_hora)), 2)} VALOR HORA: R${baseinfocontratos.valor_hora} TOTAL BRUTO CARGO COM DESC: R$ {total_bruto_cargo_ans}|"
             descricao += f"||TOTAL A FATURAR: R$ {format(total_a_faturar_nota, '.2f').replace('.', ',')}|BASE PARA RETENÇÕES:|RETENÇÃO CONFORME LEI 10833/03 - PIS: 0,0065: R$ {format(round(base_pis, 2), '2f').replace('.', ',')}|RETENÇÃO CONFORME LEI 10833/03 - CONFINS: 0,03: R$ {format(round(base_confins, 2), '2f').replace('.', ',')}|INSS RETENÇÃO: 0,11: R$ {format(round(base_inss, 2), '2f').replace('.', ',')}|I.R. RETENÇÃO: 0,048: R$ {format(round(base_ir, 2), '2f').replace('.', ',')}|RETENÇÃO CONFORME LEI 10833/03 - CSLL: 0,01: R$ {format(round(base_cssl, 2), '2f').replace('.', ',')}|RETENÇÃO CONFORME LEI 116/03 - ISS: {format(round(base_iss, 2), '2f').replace('.', ',')}|TOTAL LIQUIDO A RECEBER: R$ {format(total_liquido_descricao, '.2f').replace('.', ',')}|"
 
 
@@ -925,7 +936,7 @@ def generate_csv_for_nota(request, pk):
 
 
 
-
+        # aqui, você pode adicionar os outros casos 'MOT' e 'DISTRIBUIÇÃO' de maneira similar
         return descricao
 
 
@@ -989,8 +1000,8 @@ def generate_csv_for_nota(request, pk):
             total_a_faturar_nota = round(nota.total_valor_outros, 2)
         else:
             total_a_faturar_nota = round(nota.total_a_faturar, 2) 
-        valor_nota_import_sist2 = total_a_faturar_nota
-        return valor_nota_import_sist2
+        valor_nota_import_sist = total_a_faturar_nota
+        return valor_nota_import_sist * 100
     
     field_mappings = {
         'D': lambda nota: 'D',
