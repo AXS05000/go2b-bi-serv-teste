@@ -800,7 +800,7 @@ def generate_csv(request):
         else:
             total_a_faturar_nota = nota.total_a_faturar
 
-        valor_nota_import_sist = '{:.2f}'.format(total_a_faturar_nota)
+        valor_nota_import_sist = '{:.4f}'.format(total_a_faturar_nota)
         return int(float(valor_nota_import_sist) * 100)  # Multiplicar por 100 e converter para inteiro
 
 
