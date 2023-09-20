@@ -81,7 +81,7 @@ class GerarcsvTemplateView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['q'] = self.request.GET.get('q', '')
-        context['order_by'] = self.request.GET.get('order_by', '-id')
+        context['order_by'] = self.request.GET.get('order_by', 'id')
         page_obj = context['page_obj']
 
         # Obtém o número da página atual
