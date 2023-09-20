@@ -603,13 +603,13 @@ def generate_csv(request):
     def generate_description(nota):
         descricao = ""
         if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
-            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 2)
+            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 4)
 
         elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
             total_a_faturar_nota = round(nota.total_valor_outros, 2)
 
         else:
-            total_a_faturar_nota = round(nota.total_a_faturar, 2) 
+            total_a_faturar_nota = round(nota.total_a_faturar, 4) 
 
         base_pis = total_a_faturar_nota * Decimal("0.0065")
         base_confins = total_a_faturar_nota * Decimal("0.03")
@@ -621,7 +621,7 @@ def generate_csv(request):
             base_iss = base_txadm * nota.cnpj_da_nota.iss
         else:
             base_iss = total_a_faturar_nota * nota.cnpj_da_nota.iss
-        total_liquido_descricao = round(total_a_faturar_nota - (base_pis + base_confins + base_inss + base_ir + base_cssl + base_iss) , 2)
+        total_liquido_descricao = round(total_a_faturar_nota - (base_pis + base_confins + base_inss + base_ir + base_cssl + base_iss) , 4)
 
 
 
@@ -870,13 +870,13 @@ def generate_csv_for_nota(request, pk):
     def generate_description(nota):
         descricao = ""
         if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
-            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 2)
+            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 4)
 
         elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
             total_a_faturar_nota = round(nota.total_valor_outros, 2)
 
         else:
-            total_a_faturar_nota = round(nota.total_a_faturar, 2) 
+            total_a_faturar_nota = round(nota.total_a_faturar, 4) 
 
         base_pis = total_a_faturar_nota * Decimal("0.0065")
         base_confins = total_a_faturar_nota * Decimal("0.03")
@@ -888,7 +888,7 @@ def generate_csv_for_nota(request, pk):
             base_iss = base_txadm * nota.cnpj_da_nota.iss
         else:
             base_iss = total_a_faturar_nota * nota.cnpj_da_nota.iss
-        total_liquido_descricao = round(total_a_faturar_nota - (base_pis + base_confins + base_inss + base_ir + base_cssl + base_iss) , 2)
+        total_liquido_descricao = round(total_a_faturar_nota - (base_pis + base_confins + base_inss + base_ir + base_cssl + base_iss) , 4)
 
 
 
