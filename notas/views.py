@@ -110,7 +110,7 @@ class GerarcsvTemplateView(ListView):
 
     def get_queryset(self):
         query = self.request.GET.get('q')
-        order_by = self.request.GET.get('order_by', '-data_de_criacao')
+        order_by = self.request.GET.get('order_by', '-id')
         if query:
             try:
                 date_query = datetime.strptime(query, '%d/%m/%Y').date()  # Ajustando o formato aqui
