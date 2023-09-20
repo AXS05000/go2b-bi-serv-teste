@@ -111,16 +111,21 @@ class GerarcsvTemplateView(ListView):
     def get_queryset(self):
         query = self.request.GET.get('q')
         order_by = self.request.GET.get('order_by', '-id')
+        
+        # Filtrar por notas que não foram canceladas
+        base_query = Notas.objects.filter(nota_cancelada=True)
+        
         if query:
             try:
                 date_query = datetime.strptime(query, '%d/%m/%Y').date()  # Ajustando o formato aqui
-                return Notas.objects.filter(Q(data_de_criacao=date_query)).order_by(order_by)
+                return base_query.filter(data_de_criacao=date_query).order_by(order_by)
             except ValueError:  # Captura a exceção se a data for inválida
                 # Aqui você pode lidar com a situação onde a data é inválida, por exemplo, verificando se 'q' corresponde a uma unidade ou nome de cliente
-                notas_by_unidade = Notas.objects.filter(cnpj_da_nota__unidade__icontains=query).order_by(order_by)
-                notas_by_nome_cliente = Notas.objects.filter(cnpj_da_nota__nome_cliente__icontains=query).order_by(order_by)
+                notas_by_unidade = base_query.filter(cnpj_da_nota__unidade__icontains=query).order_by(order_by)
+                notas_by_nome_cliente = base_query.filter(cnpj_da_nota__nome_cliente__icontains=query).order_by(order_by)
                 return (notas_by_unidade | notas_by_nome_cliente)  # Retorna a união dos dois conjuntos de notas
-        return Notas.objects.all().order_by(order_by)
+                
+        return base_query.order_by(order_by)
     
 
 
