@@ -89,7 +89,7 @@ class GerarcsvTemplateView(ListView):
                 nota_fiscal = NotaFiscal2.objects.get(numero_recibo=nota.id)
                 nota.numero_nota_fiscal = nota_fiscal.numero
             except NotaFiscal2.DoesNotExist:
-                nota.numero_nota_fiscal = "Não encontrado"
+                nota.numero_nota_fiscal = "Não Emitido"
 
         context['q'] = self.request.GET.get('q', '')
         context['order_by'] = self.request.GET.get('order_by', 'id')
