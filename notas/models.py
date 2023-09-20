@@ -2,7 +2,7 @@ from decimal import ROUND_DOWN, Decimal
 
 from django.db import models
 
-from .utils import truncate_number
+from .formulas import truncate_number
 
 # Create your models here.
 

@@ -1,5 +1,3 @@
-from decimal import ROUND_DOWN, Decimal
-
 import openpyxl
 
 from .models import BaseCNPJ
@@ -54,10 +52,3 @@ def import_basecnpj_from_excel(file_path):
         )
 
 
-
-def truncate_number(number, decimals=0):
-    """
-    Truncates a number to 'decimals' decimal places without rounding.
-    """
-    factor = 10.0 ** decimals
-    return Decimal(int(number * factor)) / factor
