@@ -2,6 +2,8 @@ from decimal import ROUND_DOWN, Decimal
 
 from django.db import models
 
+from .utils import truncate_number
+
 # Create your models here.
 
 class BaseInfoContratos(models.Model):
@@ -178,7 +180,9 @@ class Notas(models.Model):
             if quantidade_hora and baseinfocontratos:
                 total += quantidade_hora * baseinfocontratos.valor_hora
         return int(total * 100)
-    
+
+
+
     @property
     def total_a_faturar(self):
         total = Decimal('0.00')
@@ -191,7 +195,11 @@ class Notas(models.Model):
             baseinfocontratos = getattr(self, f'baseinfocontratos{i}', None)
             if quantidade_hora and baseinfocontratos:
                 total += Decimal(str(quantidade_hora)) * Decimal(str(baseinfocontratos.valor_hora))
-        return total.quantize(Decimal('0.0000'), rounding=ROUND_DOWN)
+        
+        # Truncar para 2 casas decimais sem arredondar
+        total = truncate_number(total, 2)
+        
+        return total
 
 
 
