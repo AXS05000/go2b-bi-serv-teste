@@ -136,7 +136,7 @@
                 <tr>
                   <th scope="col">Selecionar</th>
                   <th scope="col">ID da nota</th>
-                  <th scope="col">Data de Criação</th>
+                  <th scope="col">Numero da Nota</th>
                   <th scope="col">Total a faturar</th>
                   <th scope="col">Nome do cliente</th>
                   <th scope="col">Unidade</th>
@@ -148,7 +148,7 @@
                 <tr>
                   <td><input type="checkbox" name="notas" value="{{ nota.id }}"></td>
                   <td><p>{{ nota.id }}</p></td>
-                  <td><p>{{ nota.id }}</p></td>
+                  <td><p>{{ nota.numero_nota_fiscal }}</p></td>
                   <td><p>{{ nota.total_a_faturar|floatformat:2 }}</p></td>
                   <td><p>{{ nota.cnpj_da_nota.nome_cliente }}</p></td>
                   <td><p>{{ nota.cnpj_da_nota.unidade }}</p></td>

@@ -80,6 +80,17 @@ class GerarcsvTemplateView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
+        notas = context['object_list']
+        
+        # Adicione números de NotaFiscal2 correspondentes às Notas
+        for nota in notas:
+            try:
+                nota_fiscal = NotaFiscal2.objects.get(numero_recibo=nota.id)
+                nota.numero_nota_fiscal = nota_fiscal.numero
+            except NotaFiscal2.DoesNotExist:
+                nota.numero_nota_fiscal = "Não encontrado"
+
         context['q'] = self.request.GET.get('q', '')
         context['order_by'] = self.request.GET.get('order_by', 'id')
         page_obj = context['page_obj']
