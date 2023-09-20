@@ -609,7 +609,7 @@ def generate_csv(request):
             total_a_faturar_nota = round(nota.total_valor_outros, 2)
 
         else:
-            total_a_faturar_nota = '{:.4f}'.format(nota.total_a_faturar_nota)
+            total_a_faturar_nota = format(total_a_faturar_nota, '.2f')
 
         base_pis = total_a_faturar_nota * Decimal("0.0065")
         base_confins = total_a_faturar_nota * Decimal("0.03")
