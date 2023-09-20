@@ -1,3 +1,5 @@
+from decimal import ROUND_DOWN, Decimal
+
 from django.db import models
 
 # Create your models here.
@@ -178,17 +180,17 @@ class Notas(models.Model):
     
     @property
     def total_a_faturar(self):
-        total = 0
+        total = Decimal('0.00')
         # Para baseinfocontratos sem número, ou seja, a primeira instância
         if self.baseinfocontratos and self.quantidade_hora:
-            total += self.baseinfocontratos.valor_hora * self.quantidade_hora
+            total += Decimal(str(self.baseinfocontratos.valor_hora)) * Decimal(str(self.quantidade_hora))
         # Para baseinfocontratos2 até baseinfocontratos8
         for i in range(2, 9):
             quantidade_hora = getattr(self, f'quantidade_hora{i}', 0)
             baseinfocontratos = getattr(self, f'baseinfocontratos{i}', None)
             if quantidade_hora and baseinfocontratos:
-                total += quantidade_hora * baseinfocontratos.valor_hora
-        return total
+                total += Decimal(str(quantidade_hora)) * Decimal(str(baseinfocontratos.valor_hora))
+        return total.quantize(Decimal('0.0000'), rounding=ROUND_DOWN)
 
 
 
