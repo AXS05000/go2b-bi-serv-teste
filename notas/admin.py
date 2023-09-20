@@ -19,7 +19,7 @@ admin.site.register(NotaFiscal2)
 
 @admin.register(Notas)
 class NotasAdmin(admin.ModelAdmin):
-    list_display = ('baseinfocontratos', 'porcentagem_ans','competencia_nota_ans', 'cnpj_da_nota', 'competencia_nota','tipo_de_faturamento', 'quantidade_hora','baseinfocontratos2', 'quantidade_hora2','baseinfocontratos3', 'quantidade_hora3','baseinfocontratos4', 'quantidade_hora4','baseinfocontratos5', 'quantidade_hora5','baseinfocontratos6', 'quantidade_hora6','baseinfocontratos7', 'quantidade_hora7','baseinfocontratos8', 'quantidade_hora8','texto_livre','total_valor_outros', 'contrato_texto_livre')
+    list_display = ('baseinfocontratos', 'nota_cancelada', 'porcentagem_ans','competencia_nota_ans', 'cnpj_da_nota', 'competencia_nota','tipo_de_faturamento', 'quantidade_hora','baseinfocontratos2', 'quantidade_hora2','baseinfocontratos3', 'quantidade_hora3','baseinfocontratos4', 'quantidade_hora4','baseinfocontratos5', 'quantidade_hora5','baseinfocontratos6', 'quantidade_hora6','baseinfocontratos7', 'quantidade_hora7','baseinfocontratos8', 'quantidade_hora8','texto_livre','total_valor_outros', 'contrato_texto_livre')
 
 @admin.register(BaseCNPJ)
 class BaseCNPJAdmin(admin.ModelAdmin):
