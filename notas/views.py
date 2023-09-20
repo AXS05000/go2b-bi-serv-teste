@@ -603,13 +603,14 @@ def generate_csv(request):
     def generate_description(nota):
         descricao = ""
         if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
-            total_a_faturar_nota = '{:.4f}'.format(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans))
+            total_a_faturar_nota = Decimal(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans)).quantize(Decimal('0.0000'))
 
         elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
-            total_a_faturar_nota = '{:.4f}'.format(nota.total_valor_outros)
+            total_a_faturar_nota = Decimal(nota.total_valor_outros).quantize(Decimal('0.0000'))
 
         else:
-            total_a_faturar_nota = '{:.4f}'.format(nota.total_a_faturar)
+            total_a_faturar_nota = Decimal(nota.total_a_faturar).quantize(Decimal('0.0000'))
+
 
         base_pis = total_a_faturar_nota * Decimal("0.0065")
         base_confins = total_a_faturar_nota * Decimal("0.03")
