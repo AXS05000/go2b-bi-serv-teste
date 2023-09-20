@@ -37,6 +37,7 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto w-100 justify-content-end">
+              {% if user.is_super_user %}
               <li class="nav-item">
                 <a class="nav-link page-scroll" href="#slider-area">Home</a>
               </li>
@@ -67,8 +68,6 @@
                       <div class="dropdown-divider"></div>
                       {% comment %} <a class="dropdown-item" href="#">Tes</a> {% endcomment %}
               </li>
-              {% if user.is_super_user %}
-              {% else %}
               <li class="nav-item dropdown">
                 <a class="nav-link nav-link-ded dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Importações</a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -81,6 +80,20 @@
                     {% comment %} <a class="dropdown-item" href="#">Tes</a> {% endcomment %}
                 </div>
               </li>
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link page-scroll" href="#slider-area">Home</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link page-scroll nav-link-ded dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Notas</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="nav-link" href="{% url 'gerar-csv' %}">Notas Fiscais</a>
+                    <a class="nav-link" href="{% url 'notasficais' %}">Notas Portal</a>
+                    <a class="nav-link" href="{% url 'notafiscal' %}">Emitir OS</a>
+                    {% comment %} <div class="dropdown-divider"></div> {% endcomment %}
+                    {% comment %} <a class="dropdown-item" href="#">Tes</a> {% endcomment %}
+                </div>
+              </li> 
               {% endif %} 
               {% if user.is_anonymous %}
               {% else %}
