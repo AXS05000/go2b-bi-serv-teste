@@ -601,26 +601,16 @@ def generate_csv(request):
     writer.writerow(first_row)
 
     def generate_description(nota):
-
-        def truncate_number(number, decimals=0):
-            """
-            Truncates a number to 'decimals' decimal places without rounding.
-            """
-            factor = 10.0 ** decimals
-            return int(number * factor) / factor
-
-        # Uso no seu caso:
-        total_a_faturar_nota_2_casas = truncate_number(nota.total_a_faturar, 2)
-
+        
         descricao = ""
         if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
-            total_a_faturar_nota = round(total_a_faturar_nota_2_casas - (total_a_faturar_nota_2_casas * nota.porcentagem_ans) , 2)
+            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 2)
 
         elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
             total_a_faturar_nota = round(nota.total_valor_outros, 2)
 
         else:
-            total_a_faturar_nota = round(total_a_faturar_nota_2_casas, 2) 
+            total_a_faturar_nota = round(nota.total_a_faturar, 2) 
 
         base_pis = total_a_faturar_nota * Decimal("0.0065")
         base_confins = total_a_faturar_nota * Decimal("0.03")
