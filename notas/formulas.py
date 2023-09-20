@@ -5,5 +5,5 @@ def truncate_number(number, decimals=0):
     """
     Truncates a number to 'decimals' decimal places without rounding.
     """
-    factor = 10.0 ** decimals
-    return Decimal(int(number * factor)) / factor
+    factor = Decimal('10') ** decimals  # Aqui o 10 é convertido para Decimal
+    return (number * factor).to_integral_value() / factor

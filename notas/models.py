@@ -181,8 +181,6 @@ class Notas(models.Model):
                 total += quantidade_hora * baseinfocontratos.valor_hora
         return int(total * 100)
 
-
-
     @property
     def total_a_faturar(self):
         total = Decimal('0.00')
