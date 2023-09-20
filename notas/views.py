@@ -582,8 +582,7 @@ def import_baseinfo(request):
 ###############################################################################
 
 
-#GERAR CSV PARA IMPORTAÇÃO DAS NOTAS - EM MASSA
-
+#GERAR CSV PARA IMPORTAÇÃO DAS NOTAS
 def generate_csv(request):
     selected_notas = request.POST.getlist('notas')
     if selected_notas:
@@ -602,16 +601,26 @@ def generate_csv(request):
     writer.writerow(first_row)
 
     def generate_description(nota):
+
+        def truncate_number(number, decimals=0):
+            """
+            Truncates a number to 'decimals' decimal places without rounding.
+            """
+            factor = 10.0 ** decimals
+            return int(number * factor) / factor
+
+        # Uso no seu caso:
+        total_a_faturar_nota_2_casas = truncate_number(nota.total_a_faturar, 2)
+
         descricao = ""
         if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
-            total_a_faturar_nota = Decimal(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans)).quantize(Decimal('0.0000'))
+            total_a_faturar_nota = round(total_a_faturar_nota_2_casas - (total_a_faturar_nota_2_casas * nota.porcentagem_ans) , 2)
 
         elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
-            total_a_faturar_nota = Decimal(nota.total_valor_outros).quantize(Decimal('0.0000'))
+            total_a_faturar_nota = round(nota.total_valor_outros, 2)
 
         else:
-            total_a_faturar_nota = Decimal(nota.total_a_faturar).quantize(Decimal('0.0000'))
-
+            total_a_faturar_nota = round(total_a_faturar_nota_2_casas, 2) 
 
         base_pis = total_a_faturar_nota * Decimal("0.0065")
         base_confins = total_a_faturar_nota * Decimal("0.03")
@@ -636,7 +645,7 @@ def generate_csv(request):
                     total_bruto_cargo = round(baseinfocontratos.valor_hora * Decimal(str(quantidade_hora)), 2)
                     total_bruto_cargo = str(total_bruto_cargo).replace('.', ',')  # substitui o ponto por vírgula
                     descricao += f"CARGO: {baseinfocontratos.cargo} - QTD HS: {round(Decimal(str(quantidade_hora)), 2)}- VALOR HORA: R${baseinfocontratos.valor_hora} TOTAL BRUTO CARGO: R$ {total_bruto_cargo}|"
-            descricao += f"||TOTAL A FATURAR: R$ {format(total_a_faturar_nota, '.2f').replace('.', ',')}|BASE PARA RETENCOES:|RETENCAO CONFORME LEI 10833/03 - PIS: 0,0065: R$ {format(round(base_pis, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CONFINS: 0,03: R$ {format(round(base_confins, 2), '2f').replace('.', ',')}|INSS RETENCAO: 0,11: R$ {format(round(base_inss, 2), '2f').replace('.', ',')}|I.R. RETENCAO: 0,048: R$ {format(round(base_ir, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CSLL: 0,01: R$ {format(round(base_cssl, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 116/03 - ISS: {format(round(nota.cnpj_da_nota.iss, 2), '2f').replace('.', ',')}: R${format(round(base_iss, 2), '2f').replace('.', ',')}|TOTAL LIQUIDO A RECEBER: R$ {format(total_liquido_descricao, '.4f').replace('.', ',')}|"
+            descricao += f"||TOTAL A FATURAR: R$ {format(total_a_faturar_nota, '.2f').replace('.', ',')}|BASE PARA RETENCOES:|RETENCAO CONFORME LEI 10833/03 - PIS: 0,0065: R$ {format(round(base_pis, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CONFINS: 0,03: R$ {format(round(base_confins, 2), '2f').replace('.', ',')}|INSS RETENCAO: 0,11: R$ {format(round(base_inss, 2), '2f').replace('.', ',')}|I.R. RETENCAO: 0,048: R$ {format(round(base_ir, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CSLL: 0,01: R$ {format(round(base_cssl, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 116/03 - ISS: {format(round(nota.cnpj_da_nota.iss, 2), '2f').replace('.', ',')}: R${format(round(base_iss, 2), '2f').replace('.', ',')}|TOTAL LIQUIDO A RECEBER: R$ {format(total_liquido_descricao, '.2f').replace('.', ',')}|"
 
 
         if nota.tipo_de_faturamento == 'FATURAMENTO HORAS' and nota.cnpj_da_nota.tipo_de_cliente == 'MOT' and nota.porcentagem_ans is None:
@@ -796,14 +805,13 @@ def generate_csv(request):
 
     def valor_nota_import(nota):
         if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
-            total_a_faturar_nota = nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans)
+            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 2)
         elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
-            total_a_faturar_nota = nota.total_valor_outros
+            total_a_faturar_nota = round(nota.total_valor_outros, 2)
         else:
-            total_a_faturar_nota = nota.total_a_faturar
-
-        valor_nota_import_sist = '{:.4f}'.format(total_a_faturar_nota)
-        return int(float(valor_nota_import_sist) * 100)  # Multiplicar por 100 e converter para inteiro
+            total_a_faturar_nota = round(nota.total_a_faturar, 2) 
+        valor_nota_import_sist = total_a_faturar_nota
+        return round(valor_nota_import_sist * 100, 0)
 
 
     field_mappings = {
