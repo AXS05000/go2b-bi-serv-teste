@@ -889,16 +889,19 @@ def generate_csv_for_nota(request, pk):
     first_row = ['H', today, today, test_marker, '18504752000155']
     writer.writerow(first_row)
 
+    
     def generate_description(nota):
+        
+        
         descricao = ""
         if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
-            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 4)
+            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 2)
 
         elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
             total_a_faturar_nota = round(nota.total_valor_outros, 2)
 
         else:
-            total_a_faturar_nota = round(nota.total_a_faturar, 4) 
+            total_a_faturar_nota = round(nota.total_a_faturar, 2) 
 
         base_pis = total_a_faturar_nota * Decimal("0.0065")
         base_confins = total_a_faturar_nota * Decimal("0.03")
