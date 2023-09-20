@@ -794,13 +794,15 @@ def generate_csv(request):
 
     def valor_nota_import(nota):
         if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
-            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 2)
+            total_a_faturar_nota = nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans)
         elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
-            total_a_faturar_nota = round(nota.total_valor_outros, 2)
+            total_a_faturar_nota = nota.total_valor_outros
         else:
-            total_a_faturar_nota = round(nota.total_a_faturar, 2) 
-        valor_nota_import_sist = total_a_faturar_nota
-        return round(valor_nota_import_sist * 100, 0)
+            total_a_faturar_nota = nota.total_a_faturar
+
+        valor_nota_import_sist = '{:.2f}'.format(total_a_faturar_nota)
+        return int(float(valor_nota_import_sist) * 100)  # Multiplicar por 100 e converter para inteiro
+
 
     field_mappings = {
         'D': lambda nota: 'D',
@@ -1061,13 +1063,15 @@ def generate_csv_for_nota(request, pk):
 
     def valor_nota_import(nota):
         if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
-            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 2)
+            total_a_faturar_nota = nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans)
         elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
-            total_a_faturar_nota = round(nota.total_valor_outros, 2)
+            total_a_faturar_nota = nota.total_valor_outros
         else:
-            total_a_faturar_nota = round(nota.total_a_faturar, 2) 
-        valor_nota_import_sist = total_a_faturar_nota
-        return round(valor_nota_import_sist * 100, 0)
+            total_a_faturar_nota = nota.total_a_faturar
+
+        valor_nota_import_sist = '{:.2f}'.format(total_a_faturar_nota)
+        return int(float(valor_nota_import_sist) * 100)  # Multiplicar por 100 e converter para inteiro
+
     
     field_mappings = {
         'D': lambda nota: 'D',
