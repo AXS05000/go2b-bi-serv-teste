@@ -2,7 +2,7 @@ from decimal import ROUND_DOWN, Decimal
 
 from django.db import models
 
-from .formulas import truncate_number
+from .formulas import truncate_decimal
 
 # Create your models here.
 
@@ -193,11 +193,7 @@ class Notas(models.Model):
             baseinfocontratos = getattr(self, f'baseinfocontratos{i}', None)
             if quantidade_hora and baseinfocontratos:
                 total += Decimal(str(quantidade_hora)) * Decimal(str(baseinfocontratos.valor_hora))
-        
-        # Truncar para 2 casas decimais sem arredondar
-        total = truncate_number(total, 2)
-        
-        return total
+        return truncate_decimal(total, 2)
 
 
 
