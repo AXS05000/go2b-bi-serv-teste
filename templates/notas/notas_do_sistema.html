@@ -148,7 +148,13 @@
                 <tr>
                   <td><input type="checkbox" name="notas" value="{{ nota.id }}"></td>
                   <td><p>{{ nota.id }}</p></td>
-                  <td><p>{{ nota.numero_nota_fiscal }}</p></td>
+                  <td>
+                    {% if nota.link_nfe %}
+                    <a href="{{ nota.link_nfe }}" target="_blank">{{ nota.numero_nota_fiscal }}</a>
+                    {% else %}
+                    {{ nota.numero_nota_fiscal }}
+                    {% endif %}
+                  </td>
                   <td><p>{{ nota.total_a_faturar|floatformat:2 }}</p></td>
                   <td><p>{{ nota.cnpj_da_nota.nome_cliente }}</p></td>
                   <td><p>{{ nota.cnpj_da_nota.unidade }}</p></td>
