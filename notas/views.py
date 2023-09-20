@@ -113,7 +113,7 @@ class GerarcsvTemplateView(ListView):
         order_by = self.request.GET.get('order_by', '-id')
         
         # Filtrar por notas que não foram canceladas
-        base_query = Notas.objects.filter(nota_cancelada=True)
+        base_query = Notas.objects.filter(nota_cancelada=False)
         
         if query:
             try:
