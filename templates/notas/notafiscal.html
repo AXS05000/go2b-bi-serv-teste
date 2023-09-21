@@ -57,21 +57,21 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto w-100 justify-content-end">
-              {% if user.is_super_user %}
+              {% if user.is_superuser %}
               <li class="nav-item">
-                <a class="nav-link page-scroll" href="#slider-area">Home</a>
+                <a class="nav-link page-scroll" href="{% url 'index' %}">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link page-scroll" href="#services">Serviços</a>
+                <a class="nav-link page-scroll" href="{% url 'index' %}">Serviços</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link page-scroll" href="#portfolios">Trabalhos</a>
+                <a class="nav-link page-scroll" href="{% url 'index' %}">Trabalhos</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link page-scroll" href="#team">Equipe</a>
+                <a class="nav-link page-scroll" href="{% url 'index' %}">Equipe</a>
               </li>
-              <li class="nav-item dropdown"  href="#nota_emissao">
-                <a class="nav-link page-scroll nav-link-ded dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Notas</a>
+              <li class="nav-item dropdown">
+                <a class="nav-link nav-link-ded dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Notas</a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="nav-link" href="{% url 'gerar-csv' %}">Notas Fiscais</a>
                     <a class="nav-link" href="{% url 'notasficais' %}">Notas Portal</a>
@@ -80,7 +80,7 @@
                     {% comment %} <a class="dropdown-item" href="#">Tes</a> {% endcomment %}
                 </div>
               </li>                             
-              <li class="nav-item dropdown">
+              <li class="nav-item dropdown" >
                 <a class="nav-link page-scroll nav-link-ded dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admissão</a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                       <a class="nav-link" href="{% url 'admissao' %}">Form Admissão</a>
@@ -102,7 +102,7 @@
               </li>
               {% else %}
               <li class="nav-item">
-                <a class="nav-link page-scroll" href="#slider-area">Home</a>
+                <a class="nav-link page-scroll" href="{% url 'index' %}">Home</a>
               </li>
               <li class="nav-item dropdown"  href="#nota_emissao">
                 <a class="nav-link page-scroll nav-link-ded dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Notas</a>
