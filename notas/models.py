@@ -94,7 +94,7 @@ class Notas(models.Model):
     baseinfocontratos = models.ForeignKey(
         BaseInfoContratos, on_delete=models.SET_NULL, null=True, blank=True
     )
-    nota_cancelada = models.BooleanField('Nota Cancelada?')
+    nota_cancelada = models.BooleanField('Nota Cancelada?', default=False)
     competencia_nota = models.ForeignKey(
         Competencias, on_delete=models.SET_NULL, null=True
     )
