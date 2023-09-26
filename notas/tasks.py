@@ -9,7 +9,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render
 from zeep import Client
 
-from .models import BaseCNPJ, BaseInfoContratos, NotaFiscal2
+from .models import BaseCNPJ, BaseInfoContratos, NotaFiscal2, Notas
 
 
 @shared_task
@@ -59,6 +59,60 @@ def import_basecnpj_from_excel(filepath):
 
     # Remove the file after processing
     os.remove(filepath)
+
+
+@shared_task
+def import_notas_from_excel(filepath):
+    workbook = openpyxl.load_workbook(filepath, read_only=True)
+    sheet = workbook.active
+
+    rows = list(sheet.iter_rows(min_row=2, values_only=True))
+    paginator = Paginator(rows, 50)
+
+    # Listando todos os campos
+    fields = [
+        'data_de_criacao',
+        'data_de_modificacao',
+        'baseinfocontratos_id',
+        'nota_cancelada',
+        'competencia_nota_id',
+        'tipo_de_faturamento',
+        'quantidade_hora',
+        'baseinfocontratos2_id',
+        'quantidade_hora2',
+        'baseinfocontratos3_id',
+        'quantidade_hora3',
+        'baseinfocontratos4_id',
+        'quantidade_hora4',
+        'baseinfocontratos5_id',
+        'quantidade_hora5',
+        'baseinfocontratos6_id',
+        'quantidade_hora6',
+        'baseinfocontratos7_id',
+        'quantidade_hora7',
+        'baseinfocontratos8_id',
+        'quantidade_hora8',
+        'cnpj_da_nota_id',
+        'texto_livre',
+        'contrato_texto_livre',
+        'total_valor_outros',
+        'porcentagem_ans',
+        'competencia_nota_ans_id'
+    ]
+
+    for page_number in paginator.page_range:
+        page = paginator.page(page_number)
+        for row in page.object_list:
+            # Aqui você pode adicionar lógica para lidar com campos especiais
+            # Por exemplo, se você tem um ForeignKey para BaseInfoContratos, você pode buscar o objeto assim:
+            # baseinfocontratos = BaseInfoContratos.objects.get(id=row[indice_do_campo])
+            # E então adicionar ao seu dict defaults:
+            # defaults['baseinfocontratos'] = baseinfocontratos
+            defaults = non_null_defaults(row, fields)
+            Notas.objects.update_or_create(id=row[0], defaults=defaults)
+
+    os.remove(filepath)
+
 
 
 @shared_task

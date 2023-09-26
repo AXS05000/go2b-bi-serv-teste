@@ -19,6 +19,7 @@ urlpatterns = [
     path('fatoutros/', views.fatoutros, name='fatoutros'),
     path('atualizar-cnpj/', views.update_basecnpj, name='atualizar_cnpj'),
     path('importar-cnpj/', views.import_basecnpj, name='importar_basecnpj'),
+    path('importar-notas/', views.import_notas_, name='importar_notas_'),
     path('importar-baseinfo/', views.import_baseinfo, name='importar_baseinfo'),
     path('generate-csv/', views.generate_csv, name='generate-csv'),
     path('generate-txt/', views.generate_txt, name='generate-txt'),

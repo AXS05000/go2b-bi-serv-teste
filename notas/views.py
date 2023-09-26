@@ -18,7 +18,8 @@ from zeep import Client
 from .forms import BaseCNPJModelForm, NotasModelForm
 from .formulas import truncate_decimal
 from .models import NotaFiscal2, Notas, NumeradorLote
-from .tasks import import_basecnpj_from_excel, import_baseinfo_from_excel
+from .tasks import (import_basecnpj_from_excel, import_baseinfo_from_excel,
+                    import_notas_from_excel)
 from .utils import update_basecnpj_from_excel
 
 #########################################################################################
@@ -531,6 +532,22 @@ def import_basecnpj(request):
         return redirect('importar_basecnpj')
 
     return render(request, 'notas/import_basecnpj.html')
+
+
+@login_required(login_url='/login/')
+def import_notas_(request):
+    if request.method == 'POST':
+        arquivo = request.FILES['arquivo']
+        filepath = os.path.join(settings.MEDIA_ROOT, arquivo.name)
+
+        with open(filepath, 'wb+') as destination:
+            for chunk in arquivo.chunks():
+                destination.write(chunk)
+
+        import_notas_from_excel.delay(filepath)
+        return redirect('importar_notas_')
+
+    return render(request, 'notas/importar_notas.html')
 
 
 @login_required(login_url='/login/')
