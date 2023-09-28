@@ -676,7 +676,7 @@ def generate_csv(request):
 
 
         if nota.tipo_de_faturamento == 'FATURAMENTO HORAS' and nota.cnpj_da_nota.tipo_de_cliente == 'MOT' and nota.porcentagem_ans is None:
-            descricao = f"PRESTACAO DE SERVICOS DE MAO DE OBRA TEMPORARIA|CONTRATO: {nota.baseinfocontratos.contrato}| COMPETENCIA: {nota.competencia_nota}  {(nota.texto_livre if nota.texto_livre else '')}|"
+            descricao = f"PRESTACAO DE SERVICOS DE MAO DE OBRA TEMPORARIA|CONTRATO: {nota.baseinfocontratos.contrato} UNIDADE: {nota.cnpj_da_nota.unidade} MCU: {nota.cnpj_da_nota.mcu}| COMPETENCIA: {nota.competencia_nota}  {(nota.texto_livre if nota.texto_livre else '')}|"
             for baseinfocontratos_field, quantidade_hora_field in [('baseinfocontratos', 'quantidade_hora'), ('baseinfocontratos2', 'quantidade_hora2'), ('baseinfocontratos3', 'quantidade_hora3'), ('baseinfocontratos4', 'quantidade_hora4'), ('baseinfocontratos5', 'quantidade_hora5'), ('baseinfocontratos6', 'quantidade_hora6'), ('baseinfocontratos7', 'quantidade_hora7'), ('baseinfocontratos8', 'quantidade_hora8')]:  # adicione aqui todos os pares baseinfocontratos/quantidade_hora
                 baseinfocontratos = getattr(nota, baseinfocontratos_field)
                 quantidade_hora = getattr(nota, quantidade_hora_field)
