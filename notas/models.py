@@ -67,7 +67,7 @@ class BaseCNPJ(models.Model):
     tipo_de_cliente = models.CharField(
         'Tipo de Cliente', max_length=150, choices=GENDER_CHOICES_2)
     tx_adm = models.DecimalField(
-        'taxa Adm', max_digits=4, decimal_places=2)
+        'taxa Adm', max_digits=4, decimal_places=4)
 
 
     class Meta:
