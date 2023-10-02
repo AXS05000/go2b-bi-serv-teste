@@ -1,3 +1,4 @@
+{% load notas_filters %}
 {% load static %}
 
 <!DOCTYPE html>
@@ -29,7 +30,8 @@
     <link rel="icon" type="image/png" href="{% static 'assets/img/go2b-bi.png' %}">
     <link id="pagestyle" href="{% static 'css/busca.css' %}" rel="stylesheet" />
     <link id="pagestyle" href="{% static 'css/paginacao.css' %}" rel="stylesheet" />
-    <link rel="stylesheet" href="{% static 'css/formulario.css' %}">    
+    <link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5+z0I5t9z5lFf5r5l5u5z5F5w5f5Oj04meM1a7xj" crossorigin="anonymous">    
   </head>
   
   <body>
@@ -147,14 +149,14 @@
               <table class="table">
                 <thead>
                 <tr>
-                  <th scope="col">Selecionar</th>
-                  <th scope="col">ID da nota</th>
-                  <th scope="col">Numero da Nota</th>
-                  <th scope="col">Total a faturar</th>
-                  <th scope="col">Nome do cliente</th>
-                  <th scope="col">Unidade</th>
-                  <th scope="col">Competência da nota</th>
-                  <th scope="col">Gerar CSV</th>
+                  <th scope="col" class="align-middle text-center">Selecionar</th>
+                  <th scope="col"class="align-middle text-center">ID da nota</th>
+                  <th scope="col" class="align-middle text-center">Numero da Nota</th>
+                  <th scope="col" class="align-middle text-center">Total a faturar</th>
+                  <th scope="col" class="align-middle text-center">Nome do cliente</th>
+                  <th scope="col" class="align-middle text-center">Unidade</th>
+                  <th scope="col" class="align-middle text-center">Competência da nota</th>
+                  <th scope="col" class="align-middle text-center">Pré-Visualizar</th>
                 </tr>
                 </thead>
                 {% for nota in page_obj %}
@@ -172,13 +174,38 @@
                   <td><p>{{ nota.cnpj_da_nota.nome_cliente }}</p></td>
                   <td><p>{{ nota.cnpj_da_nota.unidade }}</p></td>
                   <td><p>{{ nota.competencia_nota }}</p></td>
-                  <td><a href="{% url 'generate_csv_for_nota' nota.id %}">Gerar CSV</a></td>
+                  <td>
+                    <!-- Botão para abrir o modal -->
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal{{ nota.id }}">Ver Descrição</button>
+                    
+                    <!-- Modal -->
+                    <div class="modal fade" id="modal{{ nota.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h9 class="modal-title" id="exampleModalLabel">DESCRIÇÃO DA NOTA {{ nota.id }}</h9>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <!-- Aqui usamos o filtro linebreaksbr para converter o "|" em quebras de linha -->
+                            {{ nota.descricao|replace_pipe|safe }}
+
+
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
                 </tr>
                 {% endfor %}
               </table>
               <div class="login-button">
                 <button type="submit" class="btn btn-primary meu-botao">Gerar CSV para selecionados</button>
-                <a class="btn btn-primary meu-botao" href="{% url 'notasficais' %}">Emitir Ordem de Serviço</a>
               </div>
               <div class="login-button">
 
@@ -335,6 +362,7 @@
             });
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-K8OLp8MHh/+G5I6Ll5P5xX0v7U0v5MI97KM2urFpR1zj6u4z5F4w5f5Oj04meM1a" crossorigin="anonymous"></script>
     <script src="{% static 'assets_2/js/jquery-min.js' %}"></script>
     <script src="{% static 'assets_2/js/popper.min.js' %}"></script>
     <script src="{% static 'assets_2/js/bootstrap.min.js' %}"></script>
