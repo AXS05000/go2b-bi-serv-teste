@@ -15,9 +15,9 @@ from django.utils import timezone
 from django.views.generic import CreateView, ListView
 from zeep import Client
 
-from .forms import BaseCNPJModelForm, NotasModelForm
+from .forms import BaseCNPJModelForm, BaseValorModelForm, NotasModelForm
 from .formulas import truncate_decimal
-from .models import NotaFiscal2, Notas, NumeradorLote
+from .models import BaseInfoContratos, NotaFiscal2, Notas, NumeradorLote
 from .tasks import (import_basecnpj_from_excel, import_baseinfo_from_excel,
                     import_notas_from_excel)
 from .utils import update_basecnpj_from_excel
@@ -96,7 +96,7 @@ class GerarcsvTemplateView(ListView):
                 nota.link_nfe = None 
 
         context['q'] = self.request.GET.get('q', '')
-        context['order_by'] = self.request.GET.get('order_by', 'id')
+        context['order_by'] = self.request.GET.get('order_by', '-id')
         page_obj = context['page_obj']
 
         # Obtém o número da página atual
@@ -481,7 +481,25 @@ def cnpj(request):
     context = {
         'form': form
     }
-    return render(request, 'cnpj.html', context)
+    return render(request, 'notas/form_cnpj.html', context)
+
+def form_valor_hora(request):
+    if str(request.method) == 'POST':
+        form = BaseValorModelForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            
+            messages.success(request, 'Formulario salvo com sucesso')
+            form = BaseValorModelForm()
+        else:
+            messages.error(request, 'Erro ao salvar o formulario')
+            
+    else:
+        form = BaseValorModelForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'notas/form_valor_hora.html', context)
 
 
 

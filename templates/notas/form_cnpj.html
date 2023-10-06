@@ -26,24 +26,6 @@
     <link rel="stylesheet" href="{% static 'css/formulario.css' %}">    
     <link rel="stylesheet" href="{% static 'assets_2/css/responsive.css' %}">
     <link rel="icon" type="image/png" href="{% static 'assets/img/go2b-bi.png' %}">
-    <script>
-      function updateCamposCargo() {
-          const quantidadeCargos = document.getElementById('quantidade_cargos').value;
-  
-          // Esconder todos os campos de cargo e quantidade de horas
-          for (let i = 1; i <= 8; i++) {
-              document.getElementById(`cargo${i}`).style.display = 'none';
-              document.getElementById(`quantidade_hora${i}`).style.display = 'none';
-          }
-  
-          // Exibir os campos de cargo e quantidade de horas selecionados
-          for (let i = 1; i <= quantidadeCargos; i++) {
-              document.getElementById(`cargo${i}`).style.display = 'block';
-              document.getElementById(`quantidade_hora${i}`).style.display = 'block';
-          }
-      }
-  </script>
-  
   </head>
   
   <body>
@@ -140,35 +122,34 @@
 
     <div class="form-container form-center container d-flex justify-content-center align-items-center">
     <!-- Features Section Start -->
-    <section id="nota_emissao" class="section">
+    <section id="admissao" class="section">
       <div class="container">
         <div class="section-header">          
-          <h2 class="section-title">CADASTRAR ORDEM DE SERVIÇO:</h2>
-          <span>NOTA FISCAL</span>
+          <h2 class="section-title">PREENCHA O CNPJ:</h2>
         </div>
         <div class="row">
 
 
-          <form action="{% url 'notafiscal' %}" method="POST" class="form-horizontal container" autocomplete="off"
+          <form action="{% url 'cnpj' %}" method="POST" class="form-horizontal container" autocomplete="off"
           enctype="multipart/form-data">
           {% csrf_token %}
           <div class="form-header">
-              {% if form.errors %}
+                {% if form.errors %}
 
-                      {% for field in form %}
-                          {% for error in field.errors %}
-                              <div class="alert alert-danger alert-dismissible text-white" role="alert">
-                                  <span class="text-sm">{{ error }}</span>
-                                  <button type="button" class="btn-close text-lg py-3 opacity-10 cursor-pointer" data-bs-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                  </button>
-                              </div>
-                          {% endfor %}
+                  {% for field in form %}
+                      {% for error in field.errors %}
+                          <div class="alert alert-danger alert-dismissible text-white" role="alert">
+                              <span class="text-sm">{{ error }}</span>
+                              <button type="button" class="btn-close text-lg py-3 opacity-10 cursor-pointer" data-bs-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                          </div>
                       {% endfor %}
+                  {% endfor %}
 
-              {% endif %}
+                {% endif %}
 
-              {% if messages %}
+                {% if messages %}
                   {% for message in messages %}
                   {% if message.tags == 'success' %}
                   <div class="alert alert-sucess alert-dismissible text-white" role="alert">
@@ -196,133 +177,89 @@
                     <li>{{ message }}</li>
                   {% endif %}
                   {% endfor %}
-              {% endif %}
+                {% endif %}
+              <div class="input-group">
+                  <div class="input-box">
+                      <div class="select">
+                          <div id="camposAdicionais" class="select produto-quantidade">
+                              <div class="form-contratos" id="produto1">
+                                  <div class="comp-nota-1">CNPJ:</div>
+                                  <div class="comp-nota-1">{{ form.cnpj }}</div>
+                              </div>
+                              <div class="form-contratos" id="produto8">
+                                <div class="comp-nota-1">Nome do Cliente:</div>
+                                <div class="comp-nota-1">{{ form.nome_cliente }}</div>
+                              </div>
+                              <div class="tipo-de-faturamento" id="quantidade_vendida7">
+                                <div class="tipo-de-faturamento-1">Unidade:</div>
+                                <div class="tipo-de-faturamento-1">{{ form.unidade }}</div>
+                              </div>
+                              <div class="tipo-de-faturamento" id="quantidade_vendida7">
+                                <div class="tipo-de-faturamento-1">MCU:</div>
+                                <div class="tipo-de-faturamento-1">{{ form.mcu }}</div>
+                              </div>
+                              <div class="tipo-de-faturamento" id="quantidade_vendida7">
+                                <div class="tipo-de-faturamento-1">Tipo de Cliente:</div>
+                                <div class="tipo-de-faturamento-1">{{ form.tipo_de_cliente }}</div>
+                              </div>
+                              <div class="tipo-de-faturamento" id="quantidade_vendida1">
+                                  <div class="tipo-de-faturamento-1">Razão Social:</div>
+                                  <div class="tipo-de-faturamento-1">{{ form.razao }}</div>
+                              </div>
+                              <div class="tipo-de-faturamento" id="quantidade_vendida2">
+                                  <div class="tipo-de-faturamento-1">AV ou Rua ?:</div>
+                                  <div class="tipo-de-faturamento-1">{{ form.avenida_rua }}</div>
+                              </div>
+                              <div class="form-contratos" id="produto3">
+                                  <div class="comp-nota-1">Endereço:</div>
+                                  <div class="comp-nota-1">{{ form.endereco }}</div>
+                              </div>
+                              <div class="tipo-de-faturamento" id="quantidade_vendida3">
+                                  <div class="tipo-de-faturamento-1">Numero:</div>
+                                  <div class="tipo-de-faturamento-1">{{ form.numero }}</div>
+                              </div>
+                              <div class="tipo-de-faturamento" id="quantidade_vendida4">
+                                  <div class="tipo-de-faturamento-1">Complemento:</div>
+                                  <div class="tipo-de-faturamento-1">{{ form.complemento }}</div>
+                              </div>
+                              <div class="form-contratos" id="Serie CTPS">
+                                  <div class="comp-nota-1">Bairro:</div>
+                                  <div class="comp-nota-1">{{ form.bairro }}</div>
+                              </div>
+                              <div class="form-contratos" id="produto6">
+                                  <div class="comp-nota-1">Municipio:</div>
+                                  <div class="comp-nota-1">{{ form.municipio }}</div>
+                              </div>
+                              <div class="form-contratos" id="produto7">
+                                  <div class="comp-nota-1">UF:</div>
+                                  <div class="comp-nota-1">{{ form.uf }}</div>
+                              </div>
+                              <div class="tipo-de-faturamento" id="quantidade_vendida6">
+                                <div class="tipo-de-faturamento-1">CEP:</div>
+                                <div class="tipo-de-faturamento-1">{{ form.cep }}</div>
+                              </div>
+                              <div class="tipo-de-faturamento" id="quantidade_vendida6">
+                                <div class="tipo-de-faturamento-1">ISS:</div>
+                                <div class="tipo-de-faturamento-1">{{ form.iss }}</div>
+                              </div>
+                              <div class="tipo-de-faturamento" id="quantidade_vendida6">
+                                <div class="tipo-de-faturamento-1">Tipo de Serviço:</div>
+                                <div class="tipo-de-faturamento-1">{{ form.tipo_de_servico }}</div>
+                              </div>
+                              <div class="tipo-de-faturamento" id="quantidade_vendida6">
+                                <div class="tipo-de-faturamento-1">Taxa Administrativa:</div>
+                                <div class="tipo-de-faturamento-1">{{ form.tx_adm }}</div>
+                              </div>
 
-              <div class="select">
-                <div class="quantidade-de-produtos">
-                    <div class="quantidade-de-produtos-1 titulo-formulario">Selecione a quantidade de cargos:</div>
-                    <div class="quantidade-de-produtos-1">
-                        <select name="quantidade_cargos" id="quantidade_cargos" onchange="updateCamposCargo()">
-                            <option value="">Selecione uma opção</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                      <div class="input-box">
-                          <div class="select">
-                              <div id="camposAdicionais" class="select produto-quantidade">
-                                <div class="comp-nota">
-                                  <div class="comp-nota-1">Competência da Nota:</div>
-                                  <div class="comp-nota-1">{{form.competencia_nota}}</div>
-                              </div>
-                              <div id="camposAdicionais" class="select produto-quantidade">
-                                <div class="comp-nota">
-                                  <div class="comp-nota-1">Obs Período:</div>
-                                  <div class="comp-nota-1">{{form.texto_livre}}</div>
-                              </div>
-                              <div class="tipo-de-faturamento">
-                                  <div class="tipo-de-faturamento-1">Tipo de Faturamento:</div>
-                                  <div class="tipo-de-faturamento-1">{{form.tipo_de_faturamento}}</div>
-                              </div>
-                              <div class="cnpj-nota">
-                                  <div class="cnpj-nota-1">CNPJ:</div>
-                                  <div class="cnpj-nota-1">{{form.cnpj_da_nota}}</div>
-                              </div>
-                              <div class="cotratos" id="cargo1" style="display: none">
-                                <div class="cotratos-1">Cargo 1:</div>
-                                <div class="cotratos-1">{{form.baseinfocontratos}}</div>
-                              </div>
-                              <div class="qtd-horas" id="quantidade_hora1" style="display: none">
-                                  <div class="qtd-horas-1">Quantidade de Horas 1:</div>
-                                  <div class="qtd-horas-1">{{form.quantidade_hora}}</div>
-                              </div>
-                              <div class="cotratos" id="cargo2" style="display: none">
-                                  <div class="cotratos-1">Cargo 2:</div>
-                                  <div class="cotratos-1">{{form.baseinfocontratos2}}</div>
-                              </div>
-                              <div class="qtd-horas" id="quantidade_hora2" style="display: none">
-                                  <div class="qtd-horas-1">Quantidade de Horas 2:</div>
-                                  <div class="qtd-horas-1">{{form.quantidade_hora2}}</div>
-                              </div>
-                              <div class="cotratos" id="cargo3" style="display: none">
-                                  <div class="cotratos-1">Cargo 3:</div>
-                                  <div class="cotratos-1">{{form.baseinfocontratos3}}</div>
-                              </div>
-                              <div class="qtd-horas" id="quantidade_hora3" style="display: none">
-                                  <div class="qtd-horas-1">Quantidade de Horas 3:</div>
-                                  <div class="qtd-horas-1">{{form.quantidade_hora3}}</div>
-                              </div>
-                              <div class="cotratos" id="cargo4" style="display: none">
-                                  <div class="cotratos-1">Cargo 4:</div>
-                                  <div class="cotratos-1">{{form.baseinfocontratos4}}</div>
-                              </div>
-                              <div class="qtd-horas" id="quantidade_hora4" style="display: none">
-                                  <div class="qtd-horas-1">Quantidade de Horas 4:</div>
-                                  <div class="qtd-horas-1">{{form.quantidade_hora4}}</div>
-                              </div>
-                              <div class="cotratos" id="cargo5" style="display: none">
-                                  <div class="cotratos-1">Cargo 5:</div>
-                                  <div class="cotratos-1">{{form.baseinfocontratos5}}</div>
-                              </div>
-                              <div class="qtd-horas" id="quantidade_hora5" style="display: none">
-                                  <div class="qtd-horas-1">Quantidade de Horas 5:</div>
-                                  <div class="qtd-horas-1">{{form.quantidade_hora5}}</div>
-                              </div>
-                              <div class="cotratos" id="cargo6" style="display: none">
-                                  <div class="cotratos-1">Cargo 6:</div>
-                                  <div class="cotratos-1">{{form.baseinfocontratos6}}</div>
-                              </div>
-                              <div class="qtd-horas" id="quantidade_hora6" style="display: none">
-                                  <div class="qtd-horas-1">Quantidade de Horas 6:</div>
-                                  <div class="qtd-horas-1">{{form.quantidade_hora6}}</div>
-                              </div>
-                              <div class="cotratos" id="cargo7" style="display: none">
-                                  <div class="cotratos-1">Cargo 7:</div>
-                                  <div class="cotratos-1">{{form.baseinfocontratos7}}</div>
-                              </div>
-                              <div class="qtd-horas" id="quantidade_hora7" style="display: none">
-                                  <div class="qtd-horas-1">Quantidade de Horas 7:</div>
-                                  <div class="qtd-horas-1">{{form.quantidade_hora7}}</div>
-                              </div>
-                              <div class="cotratos" id="cargo8" style="display: none">
-                                  <div class="cotratos-1">Cargo 8:</div>
-                                  <div class="cotratos-1">{{form.baseinfocontratos8}}</div>
-                              </div>
-                              <div class="qtd-horas" id="quantidade_hora8" style="display: none">
-                                  <div class="qtd-horas-1">Quantidade de Horas 8:</div>
-                                  <div class="qtd-horas-1">{{form.quantidade_hora8}}</div>
-                              </div>
-                            
-                              <div class="qtd-horas">
-                                  <div class="qtd-horas-1">Porcentagem de Desconto ANS:</div>
-                                  <div class="qtd-horas-1">{{form.porcentagem_ans}}</div>
-                              </div>
-                              <div class="qtd-horas">
-                                  <div class="qtd-horas-1">Competência ANS:</div>
-                                  <div class="qtd-horas-1">{{form.competencia_nota_ans}}</div>
-                              </div>
-    
-                              </div>
-    
-    
                           </div>
+
+
                       </div>
-                </div>
-                  <div class="login-button">
-                      <button type="submit" class="btn btn-primary">Cadastrar</button>
                   </div>
-                </div>
               </div>
-            
-
-
+              <div class="login-button">
+                  <button type="submit" class="btn btn-primary">Cadastrar</button>
+              </div>
 
           </div>
       </form>

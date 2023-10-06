@@ -48,23 +48,26 @@
                 <a class="nav-link page-scroll" href="{% url 'index' %}">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link page-scroll" href="{% url 'index' %}">Serviços</a>
+                <a class="nav-link page-scroll" href="#services">Serviços</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link page-scroll" href="{% url 'index' %}">Trabalhos</a>
+                <a class="nav-link page-scroll" href="#portfolios">Trabalhos</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link page-scroll" href="{% url 'index' %}">Equipe</a>
+                <a class="nav-link page-scroll" href="#team">Equipe</a>
               </li>
-              <li class="nav-item dropdown" href="#nota_emissao">
+              <li class="nav-item dropdown">
                 <a class="nav-link page-scroll nav-link-ded dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Notas</a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="nav-link" href="{% url 'gerar-csv' %}">Notas Fiscais</a>
-                    <a class="nav-link" href="{% url 'notasficais' %}">Notas Portal</a>
-                    <a class="nav-link" href="{% url 'notafiscal' %}">Emitir OS</a>
-                    {% comment %} <div class="dropdown-divider"></div> {% endcomment %}
-                    {% comment %} <a class="dropdown-item" href="#">Tes</a> {% endcomment %}
-                </div>
+                  <a class="nav-link" href="{% url 'gerar-csv' %}">Notas Fiscais</a>
+                  <a class="nav-link" href="{% url 'notasficais' %}">Notas Portal</a>
+                  <a class="nav-link" href="{% url 'notafiscal' %}">Emitir OS</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="nav-link" href="{% url 'cnpj' %}">Cadastrar CNPJ</a>
+                  <a class="nav-link" href="{% url 'form_valor_hora' %}">Cadastrar Valor Hora</a>
+                  <a class="nav-link" href="{% url 'importar_basecnpj' %}">Importar CNPJ</a>
+                  <a class="nav-link" href="{% url 'importar_notas_' %}">Importar Notas</a>
+              </div>
               </li>                             
               <li class="nav-item dropdown">
                 <a class="nav-link page-scroll nav-link-ded dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admissão</a>
@@ -82,6 +85,7 @@
                     <a class="nav-link" href="{% url 'upload_excel_folha' %}">Importar Folha</a>
                     <a class="nav-link" href="{% url 'upload_excel_beneficio' %}">Importar Beneficio</a>
                     <a class="nav-link" href="{% url 'importar_basecnpj' %}">Importar CNPJ Notas</a>
+                    <a class="nav-link" href="{% url 'importar_notas_' %}">Importar Notas</a>
                     {% comment %} <div class="dropdown-divider"></div> {% endcomment %}
                     {% comment %} <a class="dropdown-item" href="#">Tes</a> {% endcomment %}
                 </div>
@@ -90,15 +94,18 @@
               <li class="nav-item">
                 <a class="nav-link page-scroll" href="{% url 'index' %}">Home</a>
               </li>
-              <li class="nav-item dropdown" href="#nota_emissao">
+              <li class="nav-item dropdown">
                 <a class="nav-link page-scroll nav-link-ded dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Notas</a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="nav-link" href="{% url 'gerar-csv' %}">Notas Fiscais</a>
-                    <a class="nav-link" href="{% url 'notasficais' %}">Notas Portal</a>
-                    <a class="nav-link" href="{% url 'notafiscal' %}">Emitir OS</a>
-                    {% comment %} <div class="dropdown-divider"></div> {% endcomment %}
-                    {% comment %} <a class="dropdown-item" href="#">Tes</a> {% endcomment %}
-                </div>
+                  <a class="nav-link" href="{% url 'gerar-csv' %}">Notas Fiscais</a>
+                  <a class="nav-link" href="{% url 'notasficais' %}">Notas Portal</a>
+                  <a class="nav-link" href="{% url 'notafiscal' %}">Emitir OS</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="nav-link" href="{% url 'cnpj' %}">Cadastrar CNPJ</a>
+                  <a class="nav-link" href="{% url 'form_valor_hora' %}">Cadastrar Valor Hora</a>
+                  <a class="nav-link" href="{% url 'importar_basecnpj' %}">Importar CNPJ</a>
+                  <a class="nav-link" href="{% url 'importar_notas_' %}">Importar Notas</a>
+              </div>
               </li> 
               {% endif %} 
               {% if user.is_anonymous %}

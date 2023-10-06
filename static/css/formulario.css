@@ -457,3 +457,8 @@
 .pd-button-form{
   margin: 0.1rem 0.5rem;
 }
+
+
+::placeholder { /* Para a maioria dos navegadores modernos */
+  opacity: 0.8;
+}

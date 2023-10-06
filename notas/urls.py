@@ -16,6 +16,7 @@ urlpatterns = [
     path('notafiscal7/', views.notafiscal7, name='notafiscal7'),
     path('notafiscal8/', views.notafiscal8, name='notafiscal8'),
     path('cnpj/', views.cnpj, name='cnpj'),
+    path('form-valorhora/', views.form_valor_hora, name='form_valor_hora'),
     path('fatoutros/', views.fatoutros, name='fatoutros'),
     path('atualizar-cnpj/', views.update_basecnpj, name='atualizar_cnpj'),
     path('importar-cnpj/', views.import_basecnpj, name='importar_basecnpj'),
