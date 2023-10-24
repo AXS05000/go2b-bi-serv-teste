@@ -17,7 +17,8 @@ from django.urls import path
 from PyPDF2 import PdfReader, PdfWriter
 
 from .forms import (AutenticacaoForm, CompetenciaForm, DeleteCompForm,
-                    OtimizacaoForm, SelecionarFuncionarioForm, UploadFileForm)
+                    OtimizacaoForm, SelecionarFuncionarioForm, UploadExcelForm,
+                    UploadFileForm)
 from .models import (Arquivo, Arquivo_PDF, Beneficios_Mala, Funcionario,
                      Pagamentos)
 from .tasks import (importar_excel_beneficios, importar_excel_folha_de_ponto,
@@ -49,6 +50,28 @@ def busca_autenticacoes_e_gera_pdf(competencia):
 
 
 
+
+
+
+def upload_pagamentos_mala_direta(request):
+    if request.method == 'POST':
+        form = UploadExcelForm(request.POST, request.FILES)
+        if form.is_valid():
+            excel_file = request.FILES['excel_file']
+            df = pd.read_excel(excel_file, engine='openpyxl')  # Usar engine='xlrd' para .xls
+
+            for index, row in df.iterrows():
+                pagamento, created = Pagamentos.objects.get_or_create(
+                    matricula=row['Matricula'],
+                    auntenticacao=row['Autenticação'],
+                    competencia=row['Competencia']
+                )
+
+            return redirect('upload_pagamentos_mala_direta')  # Substitua pelo nome da URL para onde você quer redirecionar após o upload
+    else:
+        form = UploadExcelForm()
+
+    return render(request, 'pdf/upload_pagamentos_mala_direta.html', {'form': form})
 
 
 

@@ -21,6 +21,7 @@ urlpatterns = [
     path('processar-arquivos-itau/', views.process_files_view_itau),
     path('gerar-pdf/', views.gerar_pdf_competencia, name='gerar_pdf_competencia'),
     path('otimizar/', views.otimizar_referencias, name='otimizar'),
+    path('upload-pagamentos-mala-direta/', views.upload_pagamentos_mala_direta, name='upload_pagamentos_mala_direta'),
    
 
 ]

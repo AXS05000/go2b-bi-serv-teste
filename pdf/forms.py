@@ -33,3 +33,7 @@ class CompetenciaForm(forms.Form):
 
 class OtimizacaoForm(forms.Form):
     competencia = forms.CharField(label='Competência', max_length=200)
+
+
+class UploadExcelForm(forms.Form):
+    excel_file = forms.FileField(label='Selecione um arquivo Excel')
