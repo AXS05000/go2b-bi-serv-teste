@@ -29,3 +29,7 @@ class UploadFileForm(forms.Form):
 
 class CompetenciaForm(forms.Form):
     competencia = forms.CharField(label='Competência', max_length=200)
+
+
+class OtimizacaoForm(forms.Form):
+    competencia = forms.CharField(label='Competência', max_length=200)

@@ -186,6 +186,10 @@ class Pagamentos(models.Model):
     matricula = models.CharField('Matricula', max_length=30)
     auntenticacao = models.CharField('Autenticação', max_length=30)
     competencia = models.CharField(max_length=200)
+    coordenadas_x = models.FloatField(null=True, blank=True)
+    coordenadas_y = models.FloatField(null=True, blank=True)
+    arquivo_referencia = models.ForeignKey(Arquivo, on_delete=models.SET_NULL, null=True, blank=True)
+    pagina = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.matricula

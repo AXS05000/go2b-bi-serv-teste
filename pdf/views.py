@@ -17,7 +17,7 @@ from django.urls import path
 from PyPDF2 import PdfReader, PdfWriter
 
 from .forms import (AutenticacaoForm, CompetenciaForm, DeleteCompForm,
-                    SelecionarFuncionarioForm, UploadFileForm)
+                    OtimizacaoForm, SelecionarFuncionarioForm, UploadFileForm)
 from .models import (Arquivo, Arquivo_PDF, Beneficios_Mala, Funcionario,
                      Pagamentos)
 from .tasks import (importar_excel_beneficios, importar_excel_folha_de_ponto,
@@ -30,22 +30,26 @@ def busca_autenticacoes_e_gera_pdf(competencia):
     matriculas_unicas = Pagamentos.objects.filter(competencia=competencia).values_list('matricula', flat=True).distinct()
     
     for matricula in matriculas_unicas:
-        autenticacoes = Pagamentos.objects.filter(matricula=matricula, competencia=competencia).values_list('auntenticacao', flat=True)
-        output_pdf = PdfWriter()
-        
-        for arquivo in Arquivo.objects.filter(competencia=competencia):
-            with open(arquivo.pdf.path, 'rb') as f:
-                reader = PdfReader(f)
-                for page_num in range(len(reader.pages)):
-                    page = reader.pages[page_num]
-                    for autenticacao in autenticacoes:
-                        if autenticacao in page.extract_text():
-                            output_pdf.add_page(page)  # <-- Atualizado aqui
-                            break
-        
-        output_filename = f"output_{matricula}.pdf"
-        with open(output_filename, 'wb') as f:
-            output_pdf.write(f)
+        pagamentos_matricula = Pagamentos.objects.filter(matricula=matricula, competencia=competencia)
+
+        doc_output = fitz.open()  # documento de saída
+
+        for pagamento in pagamentos_matricula:
+            arquivo_referencia = pagamento.arquivo_referencia
+            pagina_referencia = pagamento.pagina
+
+            if arquivo_referencia and pagina_referencia is not None:
+                doc = fitz.open(arquivo_referencia.pdf.path)
+                page = doc[pagina_referencia]
+                doc_output.insert_pdf(doc, from_page=pagina_referencia, to_page=pagina_referencia)
+
+        output_filename = f"{matricula}.pdf"
+        doc_output.save(output_filename)
+
+
+
+
+
 
 
 
@@ -64,6 +68,48 @@ def gerar_pdf_competencia(request):
     return render(request, 'pdf/pdf_mala_direta.html', {'form': form})
 
 
+def indexar_autenticacoes(competencia):
+    pagamentos = Pagamentos.objects.filter(competencia=competencia).exclude(auntenticacao__exact='')
+
+    for pagamento in pagamentos:
+        # Se já temos coordenadas para esta autenticação, podemos pular
+        if pagamento.coordenadas_x and pagamento.coordenadas_y and pagamento.pagina is not None:
+            continue
+
+        autenticacao_encontrada = False
+
+        for arquivo in Arquivo.objects.filter(competencia=competencia):
+            doc = fitz.open(arquivo.pdf.path)
+
+            for page_num, page in enumerate(doc):
+                areas = page.search_for(pagamento.auntenticacao)
+                if areas:
+                    rect = areas[0]  # Pegando a primeira ocorrência da autenticação na página
+                    pagamento.coordenadas_x = rect.x0
+                    pagamento.coordenadas_y = rect.y0
+                    pagamento.arquivo_referencia = arquivo
+                    pagamento.pagina = page_num  # Salvando o número da página
+                    pagamento.save()
+                    autenticacao_encontrada = True
+                    break
+
+            if autenticacao_encontrada:
+                break
+
+
+
+
+
+
+def otimizar_referencias(request):
+    if request.method == "POST":
+        form = OtimizacaoForm(request.POST)
+        if form.is_valid():
+            indexar_autenticacoes(form.cleaned_data['competencia'])
+            return redirect('otimizar') 
+    else:
+        form = OtimizacaoForm()
+    return render(request, 'pdf/template_otimizacao.html', {'form': form})
 
 
 
