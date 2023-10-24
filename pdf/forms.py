@@ -25,3 +25,7 @@ class AutenticacaoForm(forms.Form):
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
+
+
+class CompetenciaForm(forms.Form):
+    competencia = forms.CharField(label='Competência', max_length=200)

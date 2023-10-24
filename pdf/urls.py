@@ -19,5 +19,7 @@ urlpatterns = [
     path('processar-arquivos/', views.process_files_view),
     path('processar-arquivos-bradesco/', views.process_files_view_bradesco),
     path('processar-arquivos-itau/', views.process_files_view_itau),
+    path('gerar-pdf/', views.gerar_pdf_competencia, name='gerar_pdf_competencia'),
+   
 
 ]

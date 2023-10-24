@@ -6,7 +6,6 @@ import tempfile
 
 import chardet
 import fitz  # PyMuPDF
-# views.py
 import pandas as pd
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -15,14 +14,74 @@ from django.http import (FileResponse, Http404, HttpResponse,
                          HttpResponseRedirect)
 from django.shortcuts import redirect, render
 from django.urls import path
+from PyPDF2 import PdfReader, PdfWriter
 
-from .forms import (AutenticacaoForm, DeleteCompForm,
+from .forms import (AutenticacaoForm, CompetenciaForm, DeleteCompForm,
                     SelecionarFuncionarioForm, UploadFileForm)
-from .models import Arquivo, Arquivo_PDF, Beneficios_Mala, Funcionario
+from .models import (Arquivo, Arquivo_PDF, Beneficios_Mala, Funcionario,
+                     Pagamentos)
 from .tasks import (importar_excel_beneficios, importar_excel_folha_de_ponto,
                     importar_excel_funcionario)
 from .utils import gerar_pdf
 from .utils2 import gerar_pdf2
+
+
+def busca_autenticacoes_e_gera_pdf(competencia):
+    matriculas_unicas = Pagamentos.objects.filter(competencia=competencia).values_list('matricula', flat=True).distinct()
+    
+    for matricula in matriculas_unicas:
+        autenticacoes = Pagamentos.objects.filter(matricula=matricula, competencia=competencia).values_list('auntenticacao', flat=True)
+        output_pdf = PdfWriter()
+        
+        for arquivo in Arquivo.objects.filter(competencia=competencia):
+            with open(arquivo.pdf.path, 'rb') as f:
+                reader = PdfReader(f)
+                for page_num in range(len(reader.pages)):
+                    page = reader.pages[page_num]
+                    for autenticacao in autenticacoes:
+                        if autenticacao in page.extract_text():
+                            output_pdf.add_page(page)  # <-- Atualizado aqui
+                            break
+        
+        output_filename = f"output_{matricula}.pdf"
+        with open(output_filename, 'wb') as f:
+            output_pdf.write(f)
+
+
+
+
+
+
+def gerar_pdf_competencia(request):
+    if request.method == "POST":
+        form = CompetenciaForm(request.POST)
+        if form.is_valid():
+            busca_autenticacoes_e_gera_pdf(form.cleaned_data['competencia'])
+            # Aqui, você pode decidir o que fazer após a geração dos PDFs
+            return redirect('gerar_pdf_competencia') 
+    else:
+        form = CompetenciaForm()
+    return render(request, 'pdf/pdf_mala_direta.html', {'form': form})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def extract_info_from_page(page):

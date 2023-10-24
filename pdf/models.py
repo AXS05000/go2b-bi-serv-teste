@@ -182,3 +182,11 @@ class Arquivo_PDF(models.Model):
 
 
 
+class Pagamentos(models.Model):
+    matricula = models.CharField('Matricula', max_length=30)
+    auntenticacao = models.CharField('Autenticação', max_length=30)
+    competencia = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.matricula
+
