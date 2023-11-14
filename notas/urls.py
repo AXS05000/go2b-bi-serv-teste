@@ -27,5 +27,6 @@ urlpatterns = [
     path('generate-txt/', views.generate_txt, name='generate-txt'),
     path('notas-s/', GerarcsvTemplateView.as_view(), name='gerar-csv'),
     path('buscar-notas/', views.buscar_notas, name='buscar_notas'),
-    path('export/notas/', views.export_notas_excel, name='export_notas_excel'),  
+    path('export/notas/', views.export_notas_excel, name='export_notas_excel'),
+ 
 ]
