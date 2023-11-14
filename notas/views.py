@@ -169,7 +169,7 @@ def export_notas_excel(request):
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     )
-    response['Content-Disposition'] = 'attachment; filename=notas_cargos.xlsx'
+    response['Content-Disposition'] = 'attachment; filename=notas_cargo.xlsx'
 
     wb = Workbook()
     ws = wb.active
@@ -183,6 +183,10 @@ def export_notas_excel(request):
 
     # Dados
     for nota in Notas.objects.all():
+        # Pula notas canceladas
+        if nota.nota_cancelada:
+            continue
+
         # Convertendo competência da nota para string
         competencia_nota = str(nota.competencia_nota) if nota.competencia_nota else ''
         tipo_de_faturamento = nota.tipo_de_faturamento or ''
@@ -225,6 +229,7 @@ def export_notas_excel(request):
 
     wb.save(response)
     return response
+
 
 
 
