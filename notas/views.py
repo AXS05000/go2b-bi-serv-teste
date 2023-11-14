@@ -145,12 +145,111 @@ class GerarcsvTemplateView(ListView):
     
 
 
-#RELATÓRIO EM EXCEL DAS NOTAS
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+################RELATÓRIO EM EXCEL#####################
+
 def export_notas_excel(request):
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     )
-    response['Content-Disposition'] = 'attachment; filename=notas.xlsx'
+    response['Content-Disposition'] = 'attachment; filename=notas_cargos.xlsx'
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Notas"
+
+    # Cabeçalhos
+    columns = [
+        'ID', 'Competência da Nota', 'Tipo de Faturamento', 'Cod. Cliente', 'Contrato', 'Cargo', 'Valor Hora', 'Quantidade de Horas',
+    ]
+    ws.append(columns)
+
+    # Dados
+    for nota in Notas.objects.all():
+        # Convertendo competência da nota para string
+        competencia_nota = str(nota.competencia_nota) if nota.competencia_nota else ''
+        tipo_de_faturamento = nota.tipo_de_faturamento or ''
+
+        # Inicializa as linhas para cada nota
+        nota_rows = []
+
+        # Tratando o primeiro baseinfocontratos separadamente
+        if nota.baseinfocontratos and nota.quantidade_hora:
+            nota_rows.append([
+                nota.baseinfocontratos.cod_cliente, nota.baseinfocontratos.contrato,
+                nota.baseinfocontratos.cargo, nota.baseinfocontratos.valor_hora,
+                nota.quantidade_hora
+            ])
+
+        # Tratando baseinfocontratos2 até baseinfocontratos8
+        for i in range(2, 9):
+            baseinfocontratos = getattr(nota, f'baseinfocontratos{i}', None)
+            quantidade_hora = getattr(nota, f'quantidade_hora{i}', None)
+            if baseinfocontratos and quantidade_hora:
+                nota_rows.append([
+                    baseinfocontratos.cod_cliente, baseinfocontratos.contrato,
+                    baseinfocontratos.cargo, baseinfocontratos.valor_hora,
+                    quantidade_hora
+                ])
+
+        # Se temos linhas para adicionar, escrevemos no Excel
+        if nota_rows:
+            for i, row in enumerate(nota_rows):
+                if i == 0:
+                    # Primeira linha inclui todas as informações
+                    ws.append([
+                        nota.id, competencia_nota, tipo_de_faturamento, *row
+                    ])
+                else:
+                    # Linhas subsequentes repetem ID, competência e tipo de faturamento
+                    ws.append([
+                        nota.id, competencia_nota, tipo_de_faturamento, *row
+                    ])
+
+    wb.save(response)
+    return response
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def export_notas_excel_totais(request):
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
+    response['Content-Disposition'] = 'attachment; filename=notas_totais.xlsx'
 
     wb = Workbook()
     ws = wb.active
@@ -172,8 +271,12 @@ def export_notas_excel(request):
         ]
         ws.append(row)
 
-    wb.save(response)
-    return response
+
+
+##################################################################################
+
+
+
 
 
 
