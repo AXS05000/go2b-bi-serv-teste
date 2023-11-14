@@ -1,0 +1,552 @@
+{% load filters %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="keywords" content="Bootstrap, Landing page, Template, Registration, Landing">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="author" content="Grayrids">
+    <title>GO2B BI</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'assets_2/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets_2/css/line-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets_2/css/owl.carousel.css' %}">
+    <link rel="stylesheet" href="{% static 'assets_2/css/owl.theme.css' %}">
+    <link rel="stylesheet" href="{% static 'assets_2/css/nivo-lightbox.css' %}">
+    <link rel="stylesheet" href="{% static 'assets_2/css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'assets_2/css/animate.css' %}">
+    <link rel="stylesheet" href="{% static 'assets_2/css/color-switcher.css' %}">
+    <link rel="stylesheet" href="{% static 'assets_2/css/menu_sideslide.css' %}">
+    <link rel="stylesheet" href="{% static 'assets_2/css/main.css' %}"> 
+    <link rel="stylesheet" href="{% static 'css/formulario.css' %}">    
+    <link rel="stylesheet" href="{% static 'assets_2/css/responsive.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'assets/img/go2b-bi.png' %}">
+    <script>
+      function updateCamposCargo() {
+          const quantidadeCargos = document.getElementById('quantidade_cargos').value;
+  
+          // Esconder todos os campos de cargo e quantidade de horas
+          for (let i = 1; i <= 8; i++) {
+              document.getElementById(`cargo${i}`).style.display = 'none';
+              document.getElementById(`quantidade_hora${i}`).style.display = 'none';
+          }
+  
+          // Exibir os campos de cargo e quantidade de horas selecionados
+          for (let i = 1; i <= quantidadeCargos; i++) {
+              document.getElementById(`cargo${i}`).style.display = 'block';
+              document.getElementById(`quantidade_hora${i}`).style.display = 'block';
+          }
+      }
+  </script>
+  
+  </head>
+  
+  <body>
+    <!-- Header Section Start -->
+    <header id="slider-area">  
+      <nav class="navbar navbar-expand-md fixed-top scrolling-navbar bg-white">
+        <div class="container">  
+          <a class="navbar-brand" href="{% url 'index' %}"><img class="brand-logo" src="{% static 'assets/img/go2b-bi.png' %}" alt="" style="max-height: 25px;">  GO2B-BI</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="lni-menu"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto w-100 justify-content-end">
+              {% if user.is_superuser %}
+              <li class="nav-item">
+                <a class="nav-link page-scroll" href="{% url 'index' %}">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link page-scroll" href="#services">Serviços</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link page-scroll" href="#portfolios">Trabalhos</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link page-scroll" href="#team">Equipe</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link page-scroll nav-link-ded dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Notas</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="nav-link" href="{% url 'gerar-csv' %}">Notas Fiscais</a>
+                  <a class="nav-link" href="{% url 'notasficais' %}">Notas Portal</a>
+                  <a class="nav-link" href="{% url 'notafiscal' %}">Emitir OS</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="nav-link" href="{% url 'cnpj' %}">Cadastrar CNPJ</a>
+                  <a class="nav-link" href="{% url 'form_valor_hora' %}">Cadastrar Valor Hora</a>
+                  <a class="nav-link" href="{% url 'importar_basecnpj' %}">Importar CNPJ</a>
+                  <a class="nav-link" href="{% url 'importar_notas_' %}">Importar Notas</a>
+              </div>
+              </li>                             
+              <li class="nav-item dropdown">
+                <a class="nav-link page-scroll nav-link-ded dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admissão</a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <a class="nav-link" href="{% url 'admissao' %}">Form Admissão</a>
+                      <a class="nav-link" href="{% url 'search_collaborator' %}">Painel RH</a>
+                      <div class="dropdown-divider"></div>
+                      {% comment %} <a class="dropdown-item" href="#">Tes</a> {% endcomment %}
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link nav-link-ded dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Importações</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="nav-link" href="{% url 'upload_template' %}">Importar Word</a>
+                    <a class="nav-link" href="{% url 'upload_excel' %}">Importar Mala</a>
+                    <a class="nav-link" href="{% url 'upload_excel_folha' %}">Importar Folha</a>
+                    <a class="nav-link" href="{% url 'upload_excel_beneficio' %}">Importar Beneficio</a>
+                    <a class="nav-link" href="{% url 'importar_basecnpj' %}">Importar CNPJ Notas</a>
+                    <a class="nav-link" href="{% url 'importar_notas_' %}">Importar Notas</a>
+                    {% comment %} <div class="dropdown-divider"></div> {% endcomment %}
+                    {% comment %} <a class="dropdown-item" href="#">Tes</a> {% endcomment %}
+                </div>
+              </li>
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link page-scroll" href="{% url 'index' %}">Home</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link page-scroll nav-link-ded dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Notas</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="nav-link" href="{% url 'gerar-csv' %}">Notas Fiscais</a>
+                  <a class="nav-link" href="{% url 'notasficais' %}">Notas Portal</a>
+                  <a class="nav-link" href="{% url 'notafiscal' %}">Emitir OS</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="nav-link" href="{% url 'cnpj' %}">Cadastrar CNPJ</a>
+                  <a class="nav-link" href="{% url 'form_valor_hora' %}">Cadastrar Valor Hora</a>
+                  <a class="nav-link" href="{% url 'importar_basecnpj' %}">Importar CNPJ</a>
+                  <a class="nav-link" href="{% url 'importar_notas_' %}">Importar Notas</a>
+              </div>
+              </li> 
+              {% endif %} 
+              {% if user.is_anonymous %}
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link page-scroll" href="{% url 'logout' %}">Sair</a>
+              </li>
+              {% endif %}  
+
+            </ul>              
+          </div>
+        </div>
+      </nav> 
+
+
+    </header>
+    <!-- Header Section End --> 
+
+    <div class="form-container form-center container d-flex justify-content-center align-items-center">
+    <!-- Features Section Start -->
+    <section id="nota_emissao" class="section">
+      <div class="container">
+        <div class="section-header">          
+          <h2 class="section-title">CADASTRAR ORDEM DE SERVIÇO:</h2>
+          <span>NOTA FISCAL</span>
+        </div>
+        <div class="row">
+
+
+          <form  method="POST" class="form-horizontal container" autocomplete="off"
+          enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-header">
+              {% if form.errors %}
+
+                      {% for field in form %}
+                          {% for error in field.errors %}
+                              <div class="alert alert-danger alert-dismissible text-white" role="alert">
+                                  <span class="text-sm">{{ error }}</span>
+                                  <button type="button" class="btn-close text-lg py-3 opacity-10 cursor-pointer" data-bs-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                          {% endfor %}
+                      {% endfor %}
+
+              {% endif %}
+
+              {% if messages %}
+                  {% for message in messages %}
+                  {% if message.tags == 'success' %}
+                  <div class="alert alert-sucess alert-dismissible text-white" role="alert">
+                    <span class="text-sm">{{ message }}</span>
+                    <button type="button" class="btn-close text-lg py-3 opacity-10" data-bs-dismiss="alert" aria-label="Close" style="cursor:pointer;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  {% elif message.tags == 'error' %}
+                      <div class="alert alert-danger alert-dismissible text-white" role="alert">
+                        <span class="text-sm">{{ message }}</span>
+                        <button type="button" class="btn-close text-lg py-3 opacity-10" data-bs-dismiss="alert" aria-label="Close" style="cursor:pointer;">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                  {% elif message.tags == 'warning' %}
+                      
+                      <div class="alert alert-info2 alert-dismissible text-white" role="alert">
+                          <span class="text-sm">{{ message }}</span>
+                          <button type="button" class="btn-close text-lg py-3 opacity-10 cursor-pointer" data-bs-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                          </button>
+                      </div>
+                  {% else %}
+                    <li>{{ message }}</li>
+                  {% endif %}
+                  {% endfor %}
+              {% endif %}
+
+              <div class="select">
+                <div class="quantidade-de-produtos">
+                    <div class="quantidade-de-produtos-1 titulo-formulario">Selecione a quantidade de cargos:</div>
+                    <div class="quantidade-de-produtos-1">
+                        <select name="quantidade_cargos" id="quantidade_cargos" onchange="updateCamposCargo()">
+                            <option value="">Selecione uma opção</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                      <div class="input-box">
+                          <div class="select">
+                              <div id="camposAdicionais" class="select produto-quantidade">
+                                <div class="comp-nota">
+                                  <div class="comp-nota-1">Competência da Nota:</div>
+                                  <div class="comp-nota-1">{{form.competencia_nota}}</div>
+                              </div>
+                              <div id="camposAdicionais" class="select produto-quantidade">
+                                <div class="comp-nota">
+                                  <div class="comp-nota-1">Obs Período:</div>
+                                  <div class="comp-nota-1">{{form.texto_livre}}</div>
+                              </div>
+                              <div class="tipo-de-faturamento">
+                                  <div class="tipo-de-faturamento-1">Tipo de Faturamento:</div>
+                                  <div class="tipo-de-faturamento-1">{{form.tipo_de_faturamento}}</div>
+                              </div>
+                              <div class="cnpj-nota">
+                                  <div class="cnpj-nota-1">CNPJ:</div>
+                                  <div class="cnpj-nota-1">{{form.cnpj_da_nota}}</div>
+                              </div>
+                              <div class="cotratos" id="cargo1" style="display: none">
+                                <div class="cotratos-1">Cargo 1:</div>
+                                <div class="cotratos-1">{{form.baseinfocontratos}}</div>
+                              </div>
+                              <div class="qtd-horas" id="quantidade_hora1" style="display: none">
+                                  <div class="qtd-horas-1">Quantidade de Horas 1:</div>
+                                  <div class="qtd-horas-1">{{form.quantidade_hora}}</div>
+                              </div>
+                              <div class="cotratos" id="cargo2" style="display: none">
+                                  <div class="cotratos-1">Cargo 2:</div>
+                                  <div class="cotratos-1">{{form.baseinfocontratos2}}</div>
+                              </div>
+                              <div class="qtd-horas" id="quantidade_hora2" style="display: none">
+                                  <div class="qtd-horas-1">Quantidade de Horas 2:</div>
+                                  <div class="qtd-horas-1">{{form.quantidade_hora2}}</div>
+                              </div>
+                              <div class="cotratos" id="cargo3" style="display: none">
+                                  <div class="cotratos-1">Cargo 3:</div>
+                                  <div class="cotratos-1">{{form.baseinfocontratos3}}</div>
+                              </div>
+                              <div class="qtd-horas" id="quantidade_hora3" style="display: none">
+                                  <div class="qtd-horas-1">Quantidade de Horas 3:</div>
+                                  <div class="qtd-horas-1">{{form.quantidade_hora3}}</div>
+                              </div>
+                              <div class="cotratos" id="cargo4" style="display: none">
+                                  <div class="cotratos-1">Cargo 4:</div>
+                                  <div class="cotratos-1">{{form.baseinfocontratos4}}</div>
+                              </div>
+                              <div class="qtd-horas" id="quantidade_hora4" style="display: none">
+                                  <div class="qtd-horas-1">Quantidade de Horas 4:</div>
+                                  <div class="qtd-horas-1">{{form.quantidade_hora4}}</div>
+                              </div>
+                              <div class="cotratos" id="cargo5" style="display: none">
+                                  <div class="cotratos-1">Cargo 5:</div>
+                                  <div class="cotratos-1">{{form.baseinfocontratos5}}</div>
+                              </div>
+                              <div class="qtd-horas" id="quantidade_hora5" style="display: none">
+                                  <div class="qtd-horas-1">Quantidade de Horas 5:</div>
+                                  <div class="qtd-horas-1">{{form.quantidade_hora5}}</div>
+                              </div>
+                              <div class="cotratos" id="cargo6" style="display: none">
+                                  <div class="cotratos-1">Cargo 6:</div>
+                                  <div class="cotratos-1">{{form.baseinfocontratos6}}</div>
+                              </div>
+                              <div class="qtd-horas" id="quantidade_hora6" style="display: none">
+                                  <div class="qtd-horas-1">Quantidade de Horas 6:</div>
+                                  <div class="qtd-horas-1">{{form.quantidade_hora6}}</div>
+                              </div>
+                              <div class="cotratos" id="cargo7" style="display: none">
+                                  <div class="cotratos-1">Cargo 7:</div>
+                                  <div class="cotratos-1">{{form.baseinfocontratos7}}</div>
+                              </div>
+                              <div class="qtd-horas" id="quantidade_hora7" style="display: none">
+                                  <div class="qtd-horas-1">Quantidade de Horas 7:</div>
+                                  <div class="qtd-horas-1">{{form.quantidade_hora7}}</div>
+                              </div>
+                              <div class="cotratos" id="cargo8" style="display: none">
+                                  <div class="cotratos-1">Cargo 8:</div>
+                                  <div class="cotratos-1">{{form.baseinfocontratos8}}</div>
+                              </div>
+                              <div class="qtd-horas" id="quantidade_hora8" style="display: none">
+                                  <div class="qtd-horas-1">Quantidade de Horas 8:</div>
+                                  <div class="qtd-horas-1">{{form.quantidade_hora8}}</div>
+                              </div>
+                            
+                              <div class="qtd-horas">
+                                  <div class="qtd-horas-1">Porcentagem de Desconto ANS:</div>
+                                  <div class="qtd-horas-1">{{form.porcentagem_ans}}</div>
+                              </div>
+                              <div class="qtd-horas">
+                                  <div class="qtd-horas-1">Competência ANS:</div>
+                                  <div class="qtd-horas-1">{{form.competencia_nota_ans}}</div>
+                              </div>
+    
+                              </div>
+    
+    
+                          </div>
+                      </div>
+                </div>
+                  <div class="login-button">
+                      <button type="submit" class="btn btn-primary">Cadastrar</button>
+                  </div>
+                </div>
+              </div>
+            
+
+
+
+          </div>
+      </form>
+
+        </div>
+      </div>
+    </section>
+    </div>
+    <!-- Features Section End -->   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+      <!-- Copyright Start  -->
+      <div id="copyright">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="site-info float-left">
+                <p>Crafted by <a href="http://uideck.com" rel="nofollow">UIdeck</a></p>
+              </div>              
+              <div class="float-right">  
+                <ul class="nav nav-inline">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="#">About Prime</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">TOS</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Return Policy</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">FAQ</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Copyright End -->
+
+    </footer>
+    <!-- Footer Section End --> 
+
+    <!-- Go To Top Link -->
+    <a href="#" class="back-to-top">
+      <i class="lni-arrow-up"></i>
+    </a>
+
+    <div id="loader">
+      <div class="spinner">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+      </div>
+    </div>    
+
+    <!-- jQuery first, then Tether, then Bootstrap JS. -->
+    <script>
+      // Aguarde o DOM estar pronto
+      document.addEventListener('DOMContentLoaded', function() {
+          // Configura um temporizador para fechar o alerta após 5 segundos (5000 milissegundos)
+          setTimeout(function() {
+              // Encontre o alerta e o feche
+              var alert = document.querySelector('.alert');
+              if (alert) alert.style.display = 'none';
+          }, 5000);
+      });
+    </script>
+    <script src="{% static 'assets_2/js/jquery-min.js' %}"></script>
+    <script src="{% static 'assets_2/js/popper.min.js' %}"></script>
+    <script src="{% static 'assets_2/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets_2/js/classie.js' %}"></script>
+    <script src="{% static 'assets_2/js/color-switcher.js' %}"></script>
+    <script src="{% static 'assets_2/js/jquery.mixitup.js' %}"></script>
+    <script src="{% static 'assets_2/js/nivo-lightbox.js' %}"></script>
+    <script src="{% static 'assets_2/js/owl.carousel.js' %}"></script>    
+    <script src="{% static 'assets_2/js/jquery.stellar.min.js' %}"></script>    
+    <script src="{% static 'assets_2/js/jquery.nav.js' %}"></script>    
+    <script src="{% static 'assets_2/js/scrolling-nav.js' %}"></script>    
+    <script src="{% static 'assets_2/js/jquery.easing.min.js' %}"></script>     
+    <script src="{% static 'assets_2/js/wow.js' %}"></script> 
+    <script src="{% static 'assets_2/js/jquery.vide.js' %}"></script>
+    <script src="{% static 'assets_2/js/jquery.counterup.min.js' %}"></script>    
+    <script src="{% static 'assets_2/js/jquery.magnific-popup.min.js' %}"></script>    
+    <script src="{% static 'assets_2/js/waypoints.min.js' %}"></script>    
+    <script src="{% static 'assets_2/js/form-validator.min.js' %}"></script>
+    <script src="{% static 'assets_2/js/contact-form-script.js' %}"></script>   
+    <script src="{% static 'assets_2/js/main.js' %}"></script>
+    <script>
+      window.STATIC_URL = "{% static '' %}";
+    </script>
+    <script>
+      function formatar(mascara, documento) {
+        var i = 0;
+        var valor = documento.value.replace(/\D/g, '');
+        var formatado = '';
+      
+        for (var m = 0; m < mascara.length; m++) {
+          if (mascara[m] === '#') {
+            if (valor[i] !== undefined) {
+              formatado += valor[i++];
+            }
+          } else {
+            formatado += mascara[m];
+          }
+        }
+      
+        documento.value = formatado;
+      }
+    
+      document.getElementById('cpf').addEventListener('input', function() {
+        var cpf = this.value.replace(/\D/g, '');
+        var mascara = '###.###.###-##';
+    
+        if (cpf.length <= 3) {
+          mascara = '###';
+        } else if (cpf.length <= 6) {
+          mascara = '###.###';
+        } else if (cpf.length <= 9) {
+          mascara = '###.###.###';
+        }
+    
+        formatar(mascara, this);
+      });
+    
+      document.getElementById('celular').addEventListener('input', function() {
+        var celular = this.value.replace(/\D/g, '');
+        var mascara = '## #####-####';
+    
+        if (celular.length <= 6) {
+          mascara = '## ####-####';
+        }
+    
+        formatar(mascara, this);
+      });
+    
+      document.getElementById('cep').addEventListener('input', function() {
+        var cep = this.value.replace(/\D/g, '');
+        var mascara = '#####-###';
+    
+        if (cep.length <= 5) {
+          mascara = '#####';
+        } else if (cep.length > 5) {
+          mascara = '#####-###';
+        }
+    
+        formatar(mascara, this);
+      });
+    
+      document.getElementById('cpf').addEventListener('keydown', function(event) {
+        if (event.keyCode === 8) { // Tecla "Backspace"
+          event.preventDefault();
+          var value = this.value.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+          this.value = value.substring(0, value.length - 1); // Remove o último caractere
+    
+          var cpf = this.value.replace(/\D/g, '');
+          var mascara = '###.###.###-##';
+    
+          if (cpf.length <= 3) {
+            mascara = '###';
+          } else if (cpf.length <= 6) {
+            mascara = '###.###';
+          } else if (cpf.length <= 9) {
+            mascara = '###.###.###';
+          }
+    
+          formatar(mascara, this);
+        }
+      });
+    
+      document.getElementById('celular').addEventListener('keydown', function(event) {
+        if (event.keyCode === 8) { // Tecla "Backspace"
+          event.preventDefault();
+          var value = this.value.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+          this.value = value.substring(0, value.length - 1); // Remove o último caractere
+    
+          var celular = this.value.replace(/\D/g, '');
+          var mascara = '## #####-####';
+    
+          if (celular.length <= 6) {
+            mascara = '## ####-####';
+          }
+    
+          formatar(mascara, this);
+        }
+      });
+    
+      document.getElementById('cep').addEventListener('keydown', function(event) {
+        if (event.keyCode === 8) { // Tecla "Backspace"
+          event.preventDefault();
+          var value = this.value.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+          this.value = value.substring(0, value.length - 1); // Remove o último caractere
+    
+          var cep = this.value.replace(/\D/g, '');
+          var mascara = '#####-###';
+    
+          if (cep.length <= 5) {
+            mascara = '#####';
+          } else if (cep.length > 5) {
+            mascara = '#####-###';
+          }
+    
+          formatar(mascara, this);
+        }
+      });
+    </script>
+    
+    
+  </body>
+</html>

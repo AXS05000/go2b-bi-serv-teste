@@ -68,11 +68,11 @@ a:focus {
 }
 
 a:not([href]):not([tabindex]) {
-  color: #fff;
+  color: #f39c12;
 }
 
 a:not([href]):not([tabindex]):focus, a:not([href]):not([tabindex]):hover {
-  color: #fff;
+  color: #f39c12;
 }
 
 .bg-transparent {

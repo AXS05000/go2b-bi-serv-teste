@@ -130,12 +130,17 @@
   background-color: rgb(235, 153, 47);
   padding: 0.4rem 1rem;
   border-radius: 5px;
-  cursor: pointer;
+    
 }
 
 .meu-botao {
   margin-right: 10px; /* Isso adiciona uma margem à direita de cada botão. */
   min-width: 250px; /* Isso define uma largura mínima para os botões. */
+}
+
+.button_svg {
+  margin-right: 20px; /* Isso adiciona uma margem à direita de cada botão. */
+  min-width: 60px; /* Isso define uma largura mínima para os botões. */
 }
 
 

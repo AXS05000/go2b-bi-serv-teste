@@ -1,12 +1,13 @@
 from django.urls import path
 
 from . import views
-from .views import (GerarcsvTemplateView, NotaFiscalCreateView,
-                    Notas_FiscaisView)
+from .views import (EditarNotaFiscalUpdateView, GerarcsvTemplateView,
+                    NotaFiscalCreateView, Notas_FiscaisView)
 
 urlpatterns = [
     path('notafiscal/', NotaFiscalCreateView.as_view(), name='notafiscal'),
     path('notasfiscais/', Notas_FiscaisView.as_view(), name='notasficais'),
+    path('notasfiscais_editar/<int:pk>/', EditarNotaFiscalUpdateView.as_view(), name='editar_nota'),
     path('qtddecargos/', views.qtddecargos, name='qtddecargos'),
     path('notafiscal2/', views.notafiscal2, name='notafiscal2'),
     path('notafiscal3/', views.notafiscal3, name='notafiscal3'),
@@ -25,6 +26,6 @@ urlpatterns = [
     path('generate-csv/', views.generate_csv, name='generate-csv'),
     path('generate-txt/', views.generate_txt, name='generate-txt'),
     path('notas-s/', GerarcsvTemplateView.as_view(), name='gerar-csv'),
-    path('generate-csv-for-nota/<int:pk>', views.generate_csv_for_nota, name='generate_csv_for_nota'),
-    path('buscar-notas/', views.buscar_notas, name='buscar_notas'),  
+    path('buscar-notas/', views.buscar_notas, name='buscar_notas'),
+    path('export/notas/', views.export_notas_excel, name='export_notas_excel'),  
 ]

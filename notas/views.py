@@ -12,7 +12,8 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.utils import timezone
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, UpdateView
+from openpyxl import Workbook
 from zeep import Client
 
 from .forms import BaseCNPJModelForm, BaseValorModelForm, NotasModelForm
@@ -75,6 +76,8 @@ class Notas_FiscaisView(ListView):
         return NotaFiscal2.objects.all().order_by(order_by)
 
 
+
+
 class GerarcsvTemplateView(ListView):
     model = Notas
     template_name = 'notas/notas_do_sistema.html'
@@ -121,8 +124,6 @@ class GerarcsvTemplateView(ListView):
 
         return context
 
-
-
     def get_queryset(self):
         query = self.request.GET.get('q')
         order_by = self.request.GET.get('order_by', '-id')
@@ -144,8 +145,70 @@ class GerarcsvTemplateView(ListView):
     
 
 
+#RELATÓRIO EM EXCEL DAS NOTAS
+def export_notas_excel(request):
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
+    response['Content-Disposition'] = 'attachment; filename=notas.xlsx'
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Notas"
+
+    # Cabeçalhos
+    columns = [
+        'ID', 'Data de Criação', 'Tipo de Faturamento', 'Total a Faturar',
+        # Adicione mais cabeçalhos conforme necessário
+    ]
+    ws.append(columns)
+
+    # Dados
+    for nota in Notas.objects.all():
+        row = [
+            nota.id, nota.data_de_criacao, nota.tipo_de_faturamento,
+            nota.total_a_faturar,
+            # Adicione mais campos conforme necessário
+        ]
+        ws.append(row)
+
+    wb.save(response)
+    return response
 
 
+
+
+
+
+
+class NotaFiscalCreateView(CreateView):
+    model = Notas
+    form_class = NotasModelForm
+    template_name = 'notas/notafiscal.html'
+    success_url = '/notafiscal/'
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Nota salva com sucesso.')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao salvar o formulário, por favor verifique as informações preenchidas.')
+        return super().form_invalid(form)
+    
+
+class EditarNotaFiscalUpdateView(UpdateView):
+    model = Notas
+    form_class = NotasModelForm
+    template_name = 'notas/notafiscal_editar.html'
+    success_url = '/notafiscal/'
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Nota salva com sucesso.')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao salvar o formulário, por favor verifique as informações preenchidas.')
+        return super().form_invalid(form)
 
 
 
@@ -303,23 +366,6 @@ def buscar_notas(request):
 
 def qtddecargos(request):
     return render(request, 'qtddecargos.html')
-
-
-class NotaFiscalCreateView(CreateView):
-    model = Notas
-    form_class = NotasModelForm
-    template_name = 'notas/notafiscal.html'
-    success_url = '/notafiscal/'
-
-    def form_valid(self, form):
-        messages.success(self.request, 'Nota salva com sucesso.')
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        messages.error(self.request, 'Erro ao salvar o formulário, por favor verifique as informações preenchidas.')
-        return super().form_invalid(form)
-
-
 
 
 # 2 Cargos
@@ -1165,269 +1211,8 @@ def generate_csv(request):
 
 
 
-def generate_csv_for_nota(request, pk):
-    nota = Notas.objects.get(pk=pk)
-    notas = [nota]
-
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="notas.csv"'
-
-    writer = csv.writer(response, delimiter=';')
-    today = timezone.now().strftime("%d/%m/%Y")
-    test_marker = 'T' if 'test' in request.GET else ''
-    first_row = ['H', today, today, test_marker, '18504752000155']
-    writer.writerow(first_row)
-
-    
-    def generate_description(nota):
-        
-        
-        descricao = ""
-        if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
-            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 2)
-
-        elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
-            total_a_faturar_nota = round(nota.total_valor_outros, 2)
-
-        else:
-            total_a_faturar_nota = round(nota.total_a_faturar, 2) 
-
-        base_pis = total_a_faturar_nota * Decimal("0.0065")
-        base_confins = total_a_faturar_nota * Decimal("0.03")
-        base_inss = total_a_faturar_nota * Decimal("0.11")
-        base_ir = total_a_faturar_nota * Decimal("0.048")
-        base_cssl = total_a_faturar_nota * Decimal("0.01")
-        base_txadm = total_a_faturar_nota * nota.cnpj_da_nota.tx_adm
-        if nota.cnpj_da_nota.tipo_de_cliente == "MOT":
-            base_iss = base_txadm * nota.cnpj_da_nota.iss
-        else:
-            base_iss = total_a_faturar_nota * nota.cnpj_da_nota.iss
-        total_liquido_descricao = round(total_a_faturar_nota - (base_pis + base_confins + base_inss + base_ir + base_cssl + base_iss) , 4)
-
-
-
-        if nota.tipo_de_faturamento == 'FATURAMENTO HORAS' and nota.cnpj_da_nota.tipo_de_cliente == 'LOG' and nota.cnpj_da_nota.uf != "MG" and nota.porcentagem_ans is None:
-            descricao = f"PRESTACAO DE SERVICOS DE APOIO A OPERACAO DE ARMAZENAGEM E LOGISTICA|CONTRATO: {nota.baseinfocontratos.contrato}|COMPETENCIA: {nota.competencia_nota} {(nota.texto_livre if nota.texto_livre else '')}|"
-            for baseinfocontratos_field, quantidade_hora_field in [('baseinfocontratos', 'quantidade_hora'), ('baseinfocontratos2', 'quantidade_hora2'), ('baseinfocontratos3', 'quantidade_hora3'), ('baseinfocontratos4', 'quantidade_hora4'), ('baseinfocontratos5', 'quantidade_hora5'), ('baseinfocontratos6', 'quantidade_hora6'), ('baseinfocontratos7', 'quantidade_hora7'), ('baseinfocontratos8', 'quantidade_hora8')]:  # adicione aqui todos os pares baseinfocontratos/quantidade_hora
-                baseinfocontratos = getattr(nota, baseinfocontratos_field)
-                quantidade_hora = getattr(nota, quantidade_hora_field)
-                if baseinfocontratos and quantidade_hora:
-                    total_bruto_cargo = truncate_decimal(baseinfocontratos.valor_hora * Decimal(str(quantidade_hora)), 2)
-                    total_bruto_cargo = str(total_bruto_cargo).replace('.', ',')  # substitui o ponto por vírgula
-                    descricao += f"CARGO: {baseinfocontratos.cargo} - QTD HS: {round(Decimal(str(quantidade_hora)), 2)}- VALOR HORA: R${baseinfocontratos.valor_hora} TOTAL BRUTO CARGO: R$ {total_bruto_cargo}|"
-            descricao += f"||TOTAL A FATURAR: R$ {format(total_a_faturar_nota, '.2f').replace('.', ',')}|BASE PARA RETENCOES:|RETENCAO CONFORME LEI 10833/03 - PIS: 0,0065: R$ {format(round(base_pis, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CONFINS: 0,03: R$ {format(round(base_confins, 2), '2f').replace('.', ',')}|INSS RETENCAO: 0,11: R$ {format(round(base_inss, 2), '2f').replace('.', ',')}|I.R. RETENCAO: 0,048: R$ {format(round(base_ir, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CSLL: 0,01: R$ {format(round(base_cssl, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 116/03 - ISS: {format(round(nota.cnpj_da_nota.iss, 2), '2f').replace('.', ',')}: R${format(round(base_iss, 2), '2f').replace('.', ',')}|TOTAL LIQUIDO A RECEBER: R$ {format(total_liquido_descricao, '.2f').replace('.', ',')}|"
-
-
-        if nota.tipo_de_faturamento == 'FATURAMENTO HORAS' and nota.cnpj_da_nota.tipo_de_cliente == 'MOT' and nota.porcentagem_ans is None:
-            descricao = f"PRESTACAO DE SERVICOS DE MAO DE OBRA TEMPORARIA|CONTRATO: {nota.baseinfocontratos.contrato}| COMPETENCIA: {nota.competencia_nota}  {(nota.texto_livre if nota.texto_livre else '')}|"
-            for baseinfocontratos_field, quantidade_hora_field in [('baseinfocontratos', 'quantidade_hora'), ('baseinfocontratos2', 'quantidade_hora2'), ('baseinfocontratos3', 'quantidade_hora3'), ('baseinfocontratos4', 'quantidade_hora4'), ('baseinfocontratos5', 'quantidade_hora5'), ('baseinfocontratos6', 'quantidade_hora6'), ('baseinfocontratos7', 'quantidade_hora7'), ('baseinfocontratos8', 'quantidade_hora8')]:  # adicione aqui todos os pares baseinfocontratos/quantidade_hora
-                baseinfocontratos = getattr(nota, baseinfocontratos_field)
-                quantidade_hora = getattr(nota, quantidade_hora_field)
-                if baseinfocontratos and quantidade_hora:
-                    total_bruto_cargo = truncate_decimal(baseinfocontratos.valor_hora * Decimal(str(quantidade_hora)), 2)
-                    total_bruto_cargo = str(total_bruto_cargo).replace('.', ',')  # substitui o ponto por vírgula
-                    descricao += f"CARGO: {baseinfocontratos.cargo} - QTD HS: {round(Decimal(str(quantidade_hora)), 2)}- VALOR HORA: R${baseinfocontratos.valor_hora}|TOTAL BRUTO CARGO: R$ {total_bruto_cargo}| TX ADM / Lucro: {nota.cnpj_da_nota.tx_adm}% - R$ {base_txadm} (Base ISS)|"
-            descricao += f"||TOTAL A FATURAR: R$ {format(total_a_faturar_nota, '.2f').replace('.', ',')}|BASE PARA RETENCOES:|RETENCAO CONFORME LEI 10833/03 - PIS: 0,0065: R$ {format(round(base_pis, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CONFINS: 0,03: R$ {format(round(base_confins, 2), '2f').replace('.', ',')}|INSS RETENCAO: 0,11: R$ {format(round(base_inss, 2), '2f').replace('.', ',')}|I.R. RETENCAO: 0,048: R$ {format(round(base_ir, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CSLL: 0,01: R$ {format(round(base_cssl, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 116/03 - ISS: {format(round(nota.cnpj_da_nota.iss, 2), '2f').replace('.', ',')}: R${format(round(base_iss, 2), '2f').replace('.', ',')}|TOTAL LIQUIDO A RECEBER: R$ {format(total_liquido_descricao, '.2f').replace('.', ',')}|"
-
-
-
-
-        if nota.tipo_de_faturamento == 'FATURAMENTO HORAS' and nota.cnpj_da_nota.tipo_de_cliente == 'DISTRIBUIÇÃO' and nota.porcentagem_ans is None:
-            descricao = f"PRESTACAO DE SERVICOS CONTINUADOS DE APOIO AS UNIDADE DE DISTRUIBUICAO, UNIDADE: {nota.cnpj_da_nota.unidade} MCU: {nota.cnpj_da_nota.mcu}|CONTRATO: {nota.baseinfocontratos.contrato} - COMPETENCIA: {nota.competencia_nota} {(nota.texto_livre if nota.texto_livre else '')}|"
-            for baseinfocontratos_field, quantidade_hora_field in [('baseinfocontratos', 'quantidade_hora'), ('baseinfocontratos2', 'quantidade_hora2'), ('baseinfocontratos3', 'quantidade_hora3'), ('baseinfocontratos4', 'quantidade_hora4'), ('baseinfocontratos5', 'quantidade_hora5'), ('baseinfocontratos6', 'quantidade_hora6'), ('baseinfocontratos7', 'quantidade_hora7'), ('baseinfocontratos8', 'quantidade_hora8')]:  # adicione aqui todos os pares baseinfocontratos/quantidade_hora
-                baseinfocontratos = getattr(nota, baseinfocontratos_field)
-                quantidade_hora = getattr(nota, quantidade_hora_field)
-                if baseinfocontratos and quantidade_hora:
-                    total_bruto_cargo = truncate_decimal(baseinfocontratos.valor_hora * Decimal(str(quantidade_hora)), 2)
-                    total_bruto_cargo = str(total_bruto_cargo).replace('.', ',')  # substitui o ponto por vírgula
-                    descricao += f"CARGO: {baseinfocontratos.cargo} - QTD HS: {round(Decimal(str(quantidade_hora)), 2)}- VALOR HORA: R${baseinfocontratos.valor_hora} TOTAL BRUTO CARGO: R$ {total_bruto_cargo}|"
-            descricao += f"||TOTAL A FATURAR: R$ {format(total_a_faturar_nota, '.2f').replace('.', ',')}|BASE PARA RETENCOES:|RETENCAO CONFORME LEI 10833/03 - PIS: 0,0065: R$ {format(round(base_pis, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CONFINS: 0,03: R$ {format(round(base_confins, 2), '2f').replace('.', ',')}|INSS RETENCAO: 0,11: R$ {format(round(base_inss, 2), '2f').replace('.', ',')}|I.R. RETENCAO: 0,048: R$ {format(round(base_ir, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CSLL: 0,01: R$ {format(round(base_cssl, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 116/03 - ISS: {format(round(nota.cnpj_da_nota.iss, 2), '2f').replace('.', ',')}: R${format(round(base_iss, 2), '2f').replace('.', ',')}|TOTAL LIQUIDO A RECEBER: R$ {format(total_liquido_descricao, '.2f').replace('.', ',')}|"
-
-
-
-        #################################### MG ######################################################
-
-
-
-        if nota.tipo_de_faturamento == 'FATURAMENTO HORAS' and nota.cnpj_da_nota.tipo_de_cliente == 'LOG' and nota.cnpj_da_nota.uf == "MG" and nota.porcentagem_ans is None:
-            descricao = f"PRESTACAO DE SERVICOS DE APOIO A OPERACAO DE ARMAZENAGEM E LOGISTICA|CONTRATO: {nota.baseinfocontratos.contrato} - COMPETENCIA: {nota.competencia_nota}  {(nota.texto_livre if nota.texto_livre else '')}| MCU: {nota.cnpj_da_nota.mcu}|"
-            for baseinfocontratos_field, quantidade_hora_field in [('baseinfocontratos', 'quantidade_hora'), ('baseinfocontratos2', 'quantidade_hora2'), ('baseinfocontratos3', 'quantidade_hora3'), ('baseinfocontratos4', 'quantidade_hora4'), ('baseinfocontratos5', 'quantidade_hora5'), ('baseinfocontratos6', 'quantidade_hora6'), ('baseinfocontratos7', 'quantidade_hora7'), ('baseinfocontratos8', 'quantidade_hora8')]:  # adicione aqui todos os pares baseinfocontratos/quantidade_hora
-                baseinfocontratos = getattr(nota, baseinfocontratos_field)
-                quantidade_hora = getattr(nota, quantidade_hora_field)
-                if baseinfocontratos and quantidade_hora:
-                    total_bruto_cargo = truncate_decimal(baseinfocontratos.valor_hora * Decimal(str(quantidade_hora)), 2)
-                    total_bruto_cargo = str(total_bruto_cargo).replace('.', ',')  # substitui o ponto por vírgula
-                    descricao += f"CARGO: {baseinfocontratos.cargo} - QTD HS: {round(Decimal(str(quantidade_hora)), 2)}- VALOR HORA: R${baseinfocontratos.valor_hora} TOTAL BRUTO CARGO: R$ {total_bruto_cargo}|"
-            descricao += f"||TOTAL A FATURAR: R$ {format(total_a_faturar_nota, '.2f').replace('.', ',')}|BASE PARA RETENCOES:|RETENCAO CONFORME LEI 10833/03 - PIS: 0,0065: R$ {format(round(base_pis, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CONFINS: 0,03: R$ {format(round(base_confins, 2), '2f').replace('.', ',')}|INSS RETENCAO: 0,11: R$ {format(round(base_inss, 2), '2f').replace('.', ',')}|I.R. RETENCAO: 0,048: R$ {format(round(base_ir, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CSLL: 0,01: R$ {format(round(base_cssl, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 116/03 - ISS: {format(round(nota.cnpj_da_nota.iss, 2), '2f').replace('.', ',')}: R${format(round(base_iss, 2), '2f').replace('.', ',')}|TOTAL LIQUIDO A RECEBER: R$ {format(total_liquido_descricao, '.2f').replace('.', ',')}|"
-
-
-        if nota.tipo_de_faturamento == 'FATURAMENTO HORAS' and nota.cnpj_da_nota.tipo_de_cliente == 'LOG' and nota.cnpj_da_nota.uf == "MG" and nota.porcentagem_ans is not None:
-            descricao = f"PRESTACAO DE SERVICOS DE APOIO A OPERACAO DE ARMAZENAGEM E LOGISTICA|CONTRATO: {nota.baseinfocontratos.contrato} - COMPETENCIA: {nota.competencia_nota} {(nota.texto_livre if nota.texto_livre else '')}| MCU: {nota.cnpj_da_nota.mcu}|"
-            for baseinfocontratos_field, quantidade_hora_field in [('baseinfocontratos', 'quantidade_hora'), ('baseinfocontratos2', 'quantidade_hora2'), ('baseinfocontratos3', 'quantidade_hora3'), ('baseinfocontratos4', 'quantidade_hora4'), ('baseinfocontratos5', 'quantidade_hora5'), ('baseinfocontratos6', 'quantidade_hora6'), ('baseinfocontratos7', 'quantidade_hora7'), ('baseinfocontratos8', 'quantidade_hora8')]:  # adicione aqui todos os pares baseinfocontratos/quantidade_hora
-                baseinfocontratos = getattr(nota, baseinfocontratos_field)
-                quantidade_hora = getattr(nota, quantidade_hora_field)
-                if baseinfocontratos and quantidade_hora:
-                    total_bruto_cargo = truncate_decimal(baseinfocontratos.valor_hora * Decimal(str(quantidade_hora)), 2)
-                    total_bruto_cargo = str(total_bruto_cargo).replace('.', ',')  # substitui o ponto por vírgula
-                    descricao += f"CARGO: {baseinfocontratos.cargo} - QTD HS: {round(Decimal(str(quantidade_hora)), 2)}- VALOR HORA: R${baseinfocontratos.valor_hora} TOTAL BRUTO CARGO: R$ {total_bruto_cargo}|"
-            descricao += f"||TOTAL A FATURAR: R$ {format(total_a_faturar_nota, '.2f').replace('.', ',')}|BASE PARA RETENCOES:|RETENCAO CONFORME LEI 10833/03 - PIS: 0,0065: R$ {format(round(base_pis, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CONFINS: 0,03: R$ {format(round(base_confins, 2), '2f').replace('.', ',')}|INSS RETENCAO: 0,11: R$ {format(round(base_inss, 2), '2f').replace('.', ',')}|I.R. RETENCAO: 0,048: R$ {format(round(base_ir, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CSLL: 0,01: R$ {format(round(base_cssl, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 116/03 - ISS: {format(round(nota.cnpj_da_nota.iss, 2), '2f').replace('.', ',')}: R${format(round(base_iss, 2), '2f').replace('.', ',')}|TOTAL LIQUIDO A RECEBER: R$ {format(total_liquido_descricao, '.2f').replace('.', ',')}|"
 
 
 
 
 
-        #################################### COM ANS ######################################################
-
-
-
-        if nota.tipo_de_faturamento == 'FATURAMENTO HORAS' and nota.cnpj_da_nota.tipo_de_cliente == 'LOG' and nota.cnpj_da_nota.uf != "MG" and nota.porcentagem_ans is not None:
-            descricao = f"PRESTACAO DE SERVICOS DE APOIO A OPERACAO DE ARMAZENAGEM E LOGISTICA|CONTRATO: {nota.baseinfocontratos.contrato} - COMPETENCIA: {nota.competencia_nota} {(nota.texto_livre if nota.texto_livre else '')}||TODOS OS ITENS DESCRITOS NA NF SOFRERAM DESCONTO DE {nota.porcentagem_ans}% PELA PONTUACAO DO ANS |NA COMPETENCIA DE {nota.competencia_nota_ans.competencia}.|"
-            for baseinfocontratos_field, quantidade_hora_field in [('baseinfocontratos', 'quantidade_hora'), ('baseinfocontratos2', 'quantidade_hora2'), ('baseinfocontratos3', 'quantidade_hora3'), ('baseinfocontratos4', 'quantidade_hora4'), ('baseinfocontratos5', 'quantidade_hora5'), ('baseinfocontratos6', 'quantidade_hora6'), ('baseinfocontratos7', 'quantidade_hora7'), ('baseinfocontratos8', 'quantidade_hora8')]:  # adicione aqui todos os pares baseinfocontratos/quantidade_hora
-                baseinfocontratos = getattr(nota, baseinfocontratos_field)
-                quantidade_hora = getattr(nota, quantidade_hora_field)
-                if baseinfocontratos and quantidade_hora:
-                    total_bruto_cargo = truncate_decimal(baseinfocontratos.valor_hora * Decimal(str(quantidade_hora)), 2)
-                    total_bruto_cargo_ans = round(total_bruto_cargo - (total_bruto_cargo * Decimal(str(nota.porcentagem_ans))), 2)
-                    total_bruto_cargo_ans = str(total_bruto_cargo_ans).replace('.', ',')  # substitui o ponto por vírgula
-                    descricao += f"CARGO: {baseinfocontratos.cargo} QTD HS: {round(Decimal(str(quantidade_hora)), 2)} VALOR HORA: R${baseinfocontratos.valor_hora} TOTAL BRUTO CARGO COM DESC: R$ {total_bruto_cargo_ans}|"
-            descricao += f"||TOTAL A FATURAR: R$ {format(total_a_faturar_nota, '.2f').replace('.', ',')}|BASE PARA RETENCOES:|RETENCAO CONFORME LEI 10833/03 - PIS: 0,0065: R$ {format(round(base_pis, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CONFINS: 0,03: R$ {format(round(base_confins, 2), '2f').replace('.', ',')}|INSS RETENCAO: 0,11: R$ {format(round(base_inss, 2), '2f').replace('.', ',')}|I.R. RETENCAO: 0,048: R$ {format(round(base_ir, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CSLL: 0,01: R$ {format(round(base_cssl, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 116/03 - ISS: {format(round(nota.cnpj_da_nota.iss, 2), '2f').replace('.', ',')}: R${format(round(base_iss, 2), '2f').replace('.', ',')}|TOTAL LIQUIDO A RECEBER: R$ {format(total_liquido_descricao, '.2f').replace('.', ',')}|"
-
-
-        #################################### REPACTUAÇÃO######################################################
-
-
-
-        if nota.tipo_de_faturamento == 'FATURAMENTO REPACTUAÇÃO E REQUILIBRIO' and nota.porcentagem_ans is None:
-            descricao = f"CONTRATO: {nota.contrato_texto_livre} | | {(nota.texto_livre if nota.texto_livre else '')}"
-            
-            descricao += f"||TOTAL A FATURAR: R$ {format(total_a_faturar_nota, '.2f').replace('.', ',')}|BASE PARA RETENCOES:|RETENCAO CONFORME LEI 10833/03 - PIS: 0,0065: R$ {format(round(base_pis, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CONFINS: 0,03: R$ {format(round(base_confins, 2), '2f').replace('.', ',')}|INSS RETENCAO: 0,11: R$ {format(round(base_inss, 2), '2f').replace('.', ',')}|I.R. RETENCAO: 0,048: R$ {format(round(base_ir, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CSLL: 0,01: R$ {format(round(base_cssl, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 116/03 - ISS: {format(round(nota.cnpj_da_nota.iss, 2), '2f').replace('.', ',')}: R${format(round(base_iss, 2), '2f').replace('.', ',')}|TOTAL LIQUIDO A RECEBER: R$ {format(total_liquido_descricao, '.2f').replace('.', ',')}|"
-
-
-        #################################### PRIVADOS######################################################
-
-
-
-        if nota.tipo_de_faturamento == 'FATURAMENTO OUTROS' and nota.porcentagem_ans is None:
-            descricao = f"{(nota.texto_livre if nota.texto_livre else '')}"
-            
-            descricao += f"||TOTAL A FATURAR: R$ {format(total_a_faturar_nota, '.2f').replace('.', ',')}|BASE PARA RETENCOES:|RETENCAO CONFORME LEI 10833/03 - PIS: 0,0065: R$ {format(round(base_pis, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CONFINS: 0,03: R$ {format(round(base_confins, 2), '2f').replace('.', ',')}|INSS RETENCAO: 0,11: R$ {format(round(base_inss, 2), '2f').replace('.', ',')}|I.R. RETENCAO: 0,048: R$ {format(round(base_ir, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 10833/03 - CSLL: 0,01: R$ {format(round(base_cssl, 2), '2f').replace('.', ',')}|RETENCAO CONFORME LEI 116/03 - ISS: {format(round(nota.cnpj_da_nota.iss, 2), '2f').replace('.', ',')}: R${format(round(base_iss, 2), '2f').replace('.', ',')}|TOTAL LIQUIDO A RECEBER: R$ {format(total_liquido_descricao, '.2f').replace('.', ',')}|"
-
-
-
-
-
-        # aqui, você pode adicionar os outros casos 'MOT' e 'DISTRIBUIÇÃO' de maneira similar
-        return descricao
-
-
-    def calculate_base_ir(nota):
-        if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
-            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 2)
-        elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
-            total_a_faturar_nota = round(nota.total_valor_outros, 2)
-        else:
-            total_a_faturar_nota = round(nota.total_a_faturar, 2) 
-        base_ir = total_a_faturar_nota * Decimal("0.048")
-        return int(round(base_ir, 2)*100)
-    
-    def calculate_base_pis(nota):
-        if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
-            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 2)
-        elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
-            total_a_faturar_nota = round(nota.total_valor_outros, 2)
-        else:
-            total_a_faturar_nota = round(nota.total_a_faturar, 2) 
-        base_pis = total_a_faturar_nota * Decimal("0.0065")
-        return int(round(base_pis, 2)*100)
-    
-    def calculate_base_confins(nota):
-        if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
-            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 2)
-        elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
-            total_a_faturar_nota = round(nota.total_valor_outros, 2)
-        else:
-            total_a_faturar_nota = round(nota.total_a_faturar, 2) 
-        base_confins = total_a_faturar_nota * Decimal("0.03")
-        return int(round(base_confins, 2)*100)
-    
-
-    def calculate_base_inss(nota):
-        if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
-            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 2)
-        elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
-            total_a_faturar_nota = round(nota.total_valor_outros, 2)
-        else:
-            total_a_faturar_nota = round(nota.total_a_faturar, 2) 
-        base_inss = total_a_faturar_nota * Decimal("0.11")
-        return int(round(base_inss, 2)*100)
-    
-
-    def calculate_base_cssl(nota):
-        if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
-            total_a_faturar_nota = round(nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans) , 2)
-        elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
-            total_a_faturar_nota = round(nota.total_valor_outros, 2)
-        else:
-            total_a_faturar_nota = round(nota.total_a_faturar, 2) 
-        base_cssl = total_a_faturar_nota * Decimal("0.01")
-        return int(round(base_cssl, 2)*100)
-    
-
-    def valor_nota_import(nota):
-        if nota.porcentagem_ans is not None and nota.total_valor_outros is None:
-            total_a_faturar_nota = nota.total_a_faturar - (nota.total_a_faturar * nota.porcentagem_ans)
-        elif nota.porcentagem_ans is None and nota.total_valor_outros is not None:
-            total_a_faturar_nota = nota.total_valor_outros
-        else:
-            total_a_faturar_nota = nota.total_a_faturar
-
-        valor_nota_import_sist = '{:.2f}'.format(total_a_faturar_nota)
-        return int(float(valor_nota_import_sist) * 100)  # Multiplicar por 100 e converter para inteiro
-
-    
-    field_mappings = {
-        'D': lambda nota: 'D',
-        'sequencial': lambda nota: nota.id,
-        'id': lambda nota: nota.id,
-        'data_emissao': lambda nota: today,
-        'N': lambda nota: 'N',
-        'field_total': valor_nota_import,
-        'cnpj_tipo_de_servico': lambda nota: getattr(nota.cnpj_da_nota, 'tipo_de_servico', ''),
-        'S': lambda nota: 'S',
-        'sempre_em_branco': lambda nota: '',
-        'cnpj_cnpj': lambda nota: re.sub(r'\D', '', getattr(nota.cnpj_da_nota, 'cnpj', '')),
-        'cnpj_razao': lambda nota: getattr(nota.cnpj_da_nota, 'razao', ''),
-        'cnpj_avenida_rua': lambda nota: getattr(nota.cnpj_da_nota, 'avenida_rua', ''),
-        'cnpj_endereco': lambda nota: getattr(nota.cnpj_da_nota, 'endereco', ''),
-        'cnpj_numero': lambda nota: getattr(nota.cnpj_da_nota, 'numero', ''),
-        'cnpj_complemento': lambda nota: getattr(nota.cnpj_da_nota, 'complemento', ''),
-        'cnpj_bairro': lambda nota: getattr(nota.cnpj_da_nota, 'bairro', ''),
-        'cnpj_municipio': lambda nota: getattr(nota.cnpj_da_nota, 'municipio', ''),
-        'cnpj_uf': lambda nota: getattr(nota.cnpj_da_nota, 'uf', ''),
-        'cnpj_cep': lambda nota: getattr(nota.cnpj_da_nota, 'cep', ''),
-        'email': lambda nota: 'alex.sobreira@go2b.com.br, emissaonf@go2b.com.br',    
-        'id_2': lambda nota: nota.id,
-        'descricao': generate_description,
-        '0': lambda nota: '0',
-        'campo_em_branco_1': lambda nota: '',
-        'base_ir': calculate_base_ir,
-        'base_inss': calculate_base_inss,
-        'base_confins': calculate_base_confins,
-        'base_pis': calculate_base_pis,
-        'base_cssl': calculate_base_cssl,
-        'campo_em_branco_2': lambda nota: '0',
-    }
-    sequential_number = 1  # iniciando o número sequencial para a segunda coluna
-
-    for nota in notas:
-        row = []
-        for field, get_value in field_mappings.items():
-            if field == 'sequencial':
-                valor = sequential_number
-                sequential_number += 1
-            else:
-                valor = get_value(nota)
-            row.append(valor)
-        writer.writerow(row)
-
-    return response
