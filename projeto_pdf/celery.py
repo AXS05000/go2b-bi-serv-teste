@@ -24,7 +24,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'add-every-5-minutes': {
         'task': 'notas.tasks.task_atualizar_notas',
-        'schedule': crontab(minute=0),
+        'schedule': crontab(minute='*/5'),
     },
     # Aqui você pode adicionar mais tarefas periódicas conforme necessário Parar se atualizar de 5 minutos:  'schedule': crontab(minute='*/5'),
 }

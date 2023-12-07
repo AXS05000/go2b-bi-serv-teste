@@ -159,7 +159,7 @@ def consultar_api():
     # Criando o request com os dados passados
     request_data = {
         'ChaveAutenticacao': '5eb04d8c-fd9a-49ba-ab45-d06d816df7ad',  # valor fixo
-        'DataInicial': date(2023, 5, 1),  # valor fixo
+        'DataInicial': date(2023, 10, 1),  # valor fixo
         'DataFinal': date.today(),  # data de hoje
         'NumeroReciboInicial': None,  # valor fixo
         'NumeroReciboFinal': None,  # valor fixo
